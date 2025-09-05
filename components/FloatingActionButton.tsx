@@ -163,8 +163,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     right: 0,
+    width: 200,
+    justifyContent: 'flex-end',
   },
   optionButtonInner: {
     width: 48,
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B5CF6', // Purple for organizations
   },
   optionLabel: {
-    marginRight: 12,
+    marginLeft: 12,
     fontSize: 14,
     fontWeight: '600',
     color: Colors.dark,
@@ -204,7 +206,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    order: -1,
   },
 });
 
