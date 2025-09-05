@@ -164,9 +164,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     flexDirection: 'row-reverse',
-    right: 0,
-    width: 200,
-    justifyContent: 'flex-end',
+    right: 8,
+    width: 180,
+    justifyContent: 'space-between',
   },
   optionButtonInner: {
     width: 48,
