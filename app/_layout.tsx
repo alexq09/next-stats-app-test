@@ -85,6 +85,14 @@ function RootLayoutNav() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="team/[id]"
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerBackButtonDisplayMode: "generic",
+        }}
+      />
     </Stack>
   );
 }
