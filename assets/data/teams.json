@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Duckpond Demons",
+    "organization": "The Boys",
+    "active": false,
+    "year": "2025"
+  },
+  {
+    "name": "Harbor Hawks",
+    "organization": "Harbor League",
+    "active": true,
+    "year": "2024"
+  },
+  {
+    "name": "Riverside Raptors",
+    "organization": "Raptors United",
+    "active": true,
+    "year": "2023"
+  }
+]
