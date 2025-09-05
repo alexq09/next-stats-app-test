@@ -16,5 +16,23 @@
     "organization": "Raptors United",
     "active": true,
     "year": "2023"
+  },
+  {
+    "name": "Bayview Buccaneers",
+    "organization": "Bay League",
+    "active": true,
+    "year": "2022"
+  },
+  {
+    "name": "Cedar City Cyclones",
+    "organization": "Cedar Conference",
+    "active": false,
+    "year": "2021"
+  },
+  {
+    "name": "Maplewood Mavericks",
+    "organization": "Maplewood Association",
+    "active": true,
+    "year": "2020"
   }
 ]
