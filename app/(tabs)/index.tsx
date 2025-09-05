@@ -8,7 +8,7 @@ import SearchBar from "@/components/index/SearchBar";
 import FilterButton from "@/components/index/FilterButton";
 import TeamList from "@/components/index/TeamList";
 import { useTeamSearch } from "@/hooks/useTeamSearch";
-import FloatingActionButton from "@/components/FloatingActionButton";
+import FloatingActionButton from "@/components/index/FloatingActionButton";
 
 const Page = () => {
   const teams = useMemo(() => teamData as TeamData[], []);
