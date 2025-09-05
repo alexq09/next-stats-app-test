@@ -1,7 +1,16 @@
-import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import { Search } from 'lucide-react-native';
-import Colors from '@/constants/Colors';
+import React from "react";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Platform,
+  Keyboard,
+  InputAccessoryView,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { Search } from "lucide-react-native";
+import Colors from "@/constants/Colors";
 
 interface SearchBarProps {
   value: string;
@@ -12,8 +21,9 @@ interface SearchBarProps {
 const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChangeText,
-  placeholder = "Search"
+  placeholder = "Search",
 }) => {
+  const accessoryId = "searchInputAccessory";
   return (
     <View style={styles.container}>
       <Search size={20} color={Colors.grey} style={styles.icon} />
@@ -23,21 +33,34 @@ const SearchBar: React.FC<SearchBarProps> = ({
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={Colors.grey}
+        returnKeyType="done"
+        blurOnSubmit={true}
+        onSubmitEditing={() => Keyboard.dismiss()}
+        inputAccessoryViewID={Platform.OS === "ios" ? accessoryId : undefined}
       />
+      {Platform.OS === "ios" && (
+        <InputAccessoryView nativeID={accessoryId}>
+          <View style={styles.accessory}>
+            <TouchableOpacity onPress={() => Keyboard.dismiss()}>
+              <Text style={styles.accessoryButton}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </InputAccessoryView>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     flex: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -46,7 +69,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: "#E5E7EB",
   },
   icon: {
     marginRight: 8,
@@ -55,6 +78,19 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: Colors.dark,
+  },
+  accessory: {
+    backgroundColor: "white",
+    borderTopWidth: 1,
+    borderColor: "#E5E7EB",
+    padding: 8,
+    alignItems: "flex-end",
+  },
+  accessoryButton: {
+    color: Colors.primary || "#007AFF",
+    fontSize: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
 });
 
