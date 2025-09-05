@@ -8,6 +8,7 @@ import SearchBar from "@/components/index/SearchBar";
 import FilterButton from "@/components/index/FilterButton";
 import TeamList from "@/components/index/TeamList";
 import { useTeamSearch } from "@/hooks/useTeamSearch";
+import FloatingActionButton from "@/components/FloatingActionButton";
 
 const Page = () => {
   const teams = useMemo(() => teamData as TeamData[], []);
@@ -21,6 +22,16 @@ const Page = () => {
   const handleFilterPress = () => {
     // TODO: Open filter modal
     console.log("Filter pressed");
+  };
+
+  const handleAddTeam = () => {
+    // TODO: Navigate to add team screen
+    console.log("Add team pressed");
+  };
+
+  const handleAddOrganization = () => {
+    // TODO: Navigate to add organization screen
+    console.log("Add organization pressed");
   };
 
   return (
@@ -41,6 +52,11 @@ const Page = () => {
       </View>
 
       <TeamList teams={filteredTeams} onTeamPress={handleTeamPress} />
+      
+      <FloatingActionButton
+        onAddTeam={handleAddTeam}
+        onAddOrganization={handleAddOrganization}
+      />
     </View>
   );
 };
