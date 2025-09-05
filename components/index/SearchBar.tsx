@@ -8,6 +8,7 @@ import {
   InputAccessoryView,
   TouchableOpacity,
   Text,
+  useColorScheme,
 } from "react-native";
 import { Search } from "lucide-react-native";
 import Colors from "@/constants/Colors";
@@ -24,6 +25,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   placeholder = "Search",
 }) => {
   const accessoryId = "searchInputAccessory";
+  const colorScheme = useColorScheme();
+  const accessoryBg = colorScheme === "dark" ? "#1c1c1e" : "#EFEFF4"; // tweak if needed
   return (
     <View style={styles.container}>
       <Search size={20} color={Colors.grey} style={styles.icon} />
@@ -40,7 +43,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       />
       {Platform.OS === "ios" && (
         <InputAccessoryView nativeID={accessoryId}>
-          <View style={styles.accessory}>
+          <View style={[styles.accessory, { backgroundColor: accessoryBg }]}>
             <TouchableOpacity onPress={() => Keyboard.dismiss()}>
               <Text style={styles.accessoryButton}>Done</Text>
             </TouchableOpacity>
@@ -80,7 +83,6 @@ const styles = StyleSheet.create({
     color: Colors.dark,
   },
   accessory: {
-    backgroundColor: "white",
     borderTopWidth: 1,
     borderColor: "#E5E7EB",
     padding: 8,
