@@ -3,10 +3,10 @@ import React, { useMemo } from "react";
 import teamData from "@/assets/data/teams.json";
 import { TeamData } from "@/assets/interfaces/home";
 import { Stack } from "expo-router";
-import HomeHeader from "@/components/HomeHeader";
-import SearchBar from "@/components/SearchBar";
-import FilterButton from "@/components/FilterButton";
-import TeamList from "@/components/TeamList";
+import HomeHeader from "@/components/index/HomeHeader";
+import SearchBar from "@/components/index/SearchBar";
+import FilterButton from "@/components/index/FilterButton";
+import TeamList from "@/components/index/TeamList";
 import { useTeamSearch } from "@/hooks/useTeamSearch";
 
 const Page = () => {
@@ -15,12 +15,12 @@ const Page = () => {
 
   const handleTeamPress = (team: TeamData) => {
     // TODO: Navigate to team details
-    console.log('Team pressed:', team.name);
+    console.log("Team pressed:", team.name);
   };
 
   const handleFilterPress = () => {
     // TODO: Open filter modal
-    console.log('Filter pressed');
+    console.log("Filter pressed");
   };
 
   return (
@@ -30,7 +30,7 @@ const Page = () => {
           header: () => <HomeHeader />,
         }}
       />
-      
+
       <View style={styles.searchContainer}>
         <SearchBar
           value={searchQuery}
@@ -40,10 +40,7 @@ const Page = () => {
         <FilterButton onPress={handleFilterPress} />
       </View>
 
-      <TeamList
-        teams={filteredTeams}
-        onTeamPress={handleTeamPress}
-      />
+      <TeamList teams={filteredTeams} onTeamPress={handleTeamPress} />
     </View>
   );
 };
@@ -51,15 +48,15 @@ const Page = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: "#F8F9FA",
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 16,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: "#F8F9FA",
   },
 });
 
