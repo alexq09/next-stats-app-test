@@ -50,18 +50,17 @@ const TeamPage = () => {
       <Stack.Screen
         options={{
           headerTitle: "",
-          headerTransparent: true,
+          headerTransparent: false,
           headerBackButtonDisplayMode: "generic",
           headerStyle: {
-            backgroundColor: 'transparent',
+            backgroundColor: 'white',
           },
-          headerShadowVisible: false,
+          headerShadowVisible: true,
+          header: () => <TeamHeader team={teamDetails} />,
         }}
       />
       
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <TeamHeader team={teamDetails} />
-        
         <SeasonSelector
           seasons={availableSeasons}
           selectedSeason={selectedSeasonYear}
