@@ -348,9 +348,9 @@ const GamePage = () => {
           </View>
           
           <BottomSheetScrollView 
-            style={styles.playersList} 
-            showsVerticalScrollIndicator={false}
+            style={styles.playersList}
             contentContainerStyle={styles.playersListContent}
+            showsVerticalScrollIndicator={false}
           >
             {rosterPlayers.map((player) => (
               <TouchableOpacity
@@ -632,8 +632,10 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   playersList: {
+    flex: 1,
   },
   playersListContent: {
+    flexGrow: 1,
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
