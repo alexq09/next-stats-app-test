@@ -96,7 +96,7 @@ const GamePage = () => {
         <View style={styles.gameHeader}>
           <View style={styles.opponentSection}>
             <Text style={styles.opponentName}>
-              {opponentName}
+              {currentTeamName}
             </Text>
           </View>
           
