@@ -23,6 +23,7 @@ const TeamHeader: React.FC<TeamHeaderProps> = ({ team }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
+    paddingTop: 100, // Add space for the transparent header
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 20,
   },
   teamInfo: {
     alignItems: 'center',
