@@ -94,9 +94,10 @@ const GamePage = () => {
       <View style={styles.container}>
         {/* Game Header */}
         <View style={styles.gameHeader}>
-          <View style={styles.teamBox}>
-            <Text style={styles.teamAbbreviation}>WWP</Text>
-            <View style={styles.teamUnderline} />
+          <View style={styles.opponentSection}>
+            <Text style={styles.opponentName}>
+              {opponentName}
+            </Text>
           </View>
           
           <View style={styles.scoreSection}>
