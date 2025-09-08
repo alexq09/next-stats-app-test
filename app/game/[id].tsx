@@ -66,7 +66,7 @@ const GamePage = () => {
 
   // Bottom sheet setup
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['70%'], []);
+  const snapPoints = useMemo(() => ['70%', '90%'], []);
 
   // Mock roster data - in a real app this would come from your data source
   const rosterPlayers: Player[] = [
@@ -330,6 +330,8 @@ const GamePage = () => {
           snapPoints={snapPoints}
           onChange={handleSheetChanges}
           enablePanDownToClose={true}
+          enableContentPanningGesture={false}
+          enableHandlePanningGesture={true}
           backgroundStyle={styles.bottomSheetBackground}
           handleIndicatorStyle={styles.bottomSheetIndicator}
         >
@@ -350,6 +352,7 @@ const GamePage = () => {
               style={styles.playersList} 
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.playersListContent}
+              nestedScrollEnabled={true}
             >
               {rosterPlayers.map((player) => (
                 <TouchableOpacity
