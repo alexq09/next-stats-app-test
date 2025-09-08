@@ -1,0 +1,102 @@
+[
+  {
+    "id": "duckpond-demons",
+    "name": "Duckpond Demons",
+    "organization": "The Boys",
+    "seasons": [
+      {
+        "year": "2025",
+        "active": false,
+        "record": { "wins": 0, "losses": 0, "ties": 0 },
+        "rosterSize": 0,
+        "games": []
+      },
+      {
+        "year": "2024",
+        "active": true,
+        "record": { "wins": 12, "losses": 3, "ties": 1 },
+        "rosterSize": 24,
+        "games": [
+          {
+            "id": "game-1",
+            "opponent": "Harbor Hawks",
+            "date": "2024-03-15",
+            "homeTeam": "Duckpond Demons",
+            "awayTeam": "Harbor Hawks",
+            "homeScore": 21,
+            "awayScore": 14,
+            "status": "completed",
+            "location": "Duckpond Stadium"
+          },
+          {
+            "id": "game-2",
+            "opponent": "Riverside Raptors",
+            "date": "2024-03-22",
+            "homeTeam": "Riverside Raptors",
+            "awayTeam": "Duckpond Demons",
+            "homeScore": 7,
+            "awayScore": 28,
+            "status": "completed",
+            "location": "Riverside Field"
+          },
+          {
+            "id": "game-3",
+            "opponent": "Bayview Buccaneers",
+            "date": "2024-03-29",
+            "homeTeam": "Duckpond Demons",
+            "awayTeam": "Bayview Buccaneers",
+            "homeScore": 14,
+            "awayScore": 14,
+            "status": "completed",
+            "location": "Duckpond Stadium"
+          }
+        ]
+      },
+      {
+        "year": "2023",
+        "active": false,
+        "record": { "wins": 8, "losses": 6, "ties": 2 },
+        "rosterSize": 22,
+        "games": [
+          {
+            "id": "game-4",
+            "opponent": "Cedar City Cyclones",
+            "date": "2023-04-10",
+            "homeTeam": "Duckpond Demons",
+            "awayTeam": "Cedar City Cyclones",
+            "homeScore": 35,
+            "awayScore": 21,
+            "status": "completed",
+            "location": "Duckpond Stadium"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "harbor-hawks",
+    "name": "Harbor Hawks",
+    "organization": "Harbor League",
+    "seasons": [
+      {
+        "year": "2024",
+        "active": true,
+        "record": { "wins": 9, "losses": 5, "ties": 2 },
+        "rosterSize": 26,
+        "games": [
+          {
+            "id": "game-5",
+            "opponent": "Duckpond Demons",
+            "date": "2024-03-15",
+            "homeTeam": "Duckpond Demons",
+            "awayTeam": "Harbor Hawks",
+            "homeScore": 21,
+            "awayScore": 14,
+            "status": "completed",
+            "location": "Duckpond Stadium"
+          }
+        ]
+      }
+    ]
+  }
+]
