@@ -3,8 +3,7 @@ import React, { useState, useCallback, useMemo, useRef } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
 import Colors from "@/constants/Colors";
-import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import BottomSheet, { BottomSheetView, BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView, BottomSheetScrollView, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface GameAction {
