@@ -4,6 +4,7 @@ import { useLocalSearchParams, Stack } from "expo-router";
 import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
 import Colors from "@/constants/Colors";
 import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface GameAction {
@@ -347,14 +348,11 @@ const GamePage = () => {
             </TouchableOpacity>
           </View>
           
-          <BottomSheetScrollView 
-            style={styles.playersList}
-            contentContainerStyle={styles.playersListContent}
-            showsVerticalScrollIndicator={false}
-          >
-            {rosterPlayers.map((player) => (
+          <BottomSheetFlatList
+            data={rosterPlayers}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item: player }) => (
               <TouchableOpacity
-                key={player.id}
                 style={styles.playerItem}
                 onPress={() => handlePlayerSelect(player)}
               >
@@ -366,8 +364,10 @@ const GamePage = () => {
                   <Text style={styles.playerPosition}>{player.position}</Text>
                 </View>
               </TouchableOpacity>
-            ))}
-          </BottomSheetScrollView>
+            )}
+            contentContainerStyle={styles.playersListContent}
+            showsVerticalScrollIndicator={false}
+          />
         </BottomSheet>
       </View>
     </GestureHandlerRootView>
@@ -632,10 +632,6 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   playersList: {
-    flex: 1,
-  },
-  playersListContent: {
-    flexGrow: 1,
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
