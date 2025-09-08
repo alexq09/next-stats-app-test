@@ -93,6 +93,14 @@ function RootLayoutNav() {
           headerBackButtonDisplayMode: "generic",
         }}
       />
+      <Stack.Screen
+        name="game/[id]"
+        options={{
+          headerTitle: "Game",
+          headerTransparent: true,
+          headerBackButtonDisplayMode: "generic",
+        }}
+      />
     </Stack>
   );
 }
