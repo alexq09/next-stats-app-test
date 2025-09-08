@@ -4,10 +4,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Modal,
 } from "react-native";
 import React, { useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
-import { Users, Undo, ArrowLeftRight } from "lucide-react-native";
+import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
 import Colors from "@/constants/Colors";
 
 interface GameAction {
@@ -16,6 +17,13 @@ interface GameAction {
   timestamp: string;
   points?: number;
   team: "home" | "away";
+}
+
+interface Player {
+  id: string;
+  name: string;
+  number: string;
+  position: string;
 }
 
 const GamePage = () => {
@@ -29,6 +37,9 @@ const GamePage = () => {
   const [awayScore, setAwayScore] = useState(0);
   const [selectedTeam, setSelectedTeam] = useState<"home" | "away">("home");
   const [actions, setActions] = useState<GameAction[]>([]);
+  const [showPlayerSelection, setShowPlayerSelection] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ type: string; points: number } | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   const currentTeamName = team || "Team";
   const opponentName = opponent || "Opponent";
@@ -56,6 +67,55 @@ const GamePage = () => {
     }
   };
 
+  const addActionWithPlayer = (actionType: string, player: Player, points: number = 0) => {
+    const newAction: GameAction = {
+      id: Date.now().toString(),
+      type: actionType,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      points,
+      team: selectedTeam,
+    };
+
+    setActions((prev) => [newAction, ...prev]);
+
+    if (points > 0) {
+      if (selectedTeam === "home") {
+        setHomeScore((prev) => prev + points);
+      } else {
+        setAwayScore((prev) => prev + points);
+      }
+    }
+  };
+
+  const handleStatAction = (actionType: string, points: number = 0) => {
+    // Only show player selection for home team stat actions (non-scoring)
+    if (selectedTeam === "home" && points === 0) {
+      setPendingAction({ type: actionType, points });
+      setShowPlayerSelection(true);
+    } else {
+      // For away team or scoring actions, add directly
+      addAction(actionType, points);
+    }
+  };
+
+  const handlePlayerSelect = (player: Player) => {
+    if (pendingAction) {
+      addActionWithPlayer(pendingAction.type, player, pendingAction.points);
+      setShowPlayerSelection(false);
+      setPendingAction(null);
+      setSelectedPlayer(null);
+    }
+  };
+
+  const handleClosePlayerSelection = () => {
+    setShowPlayerSelection(false);
+    setPendingAction(null);
+    setSelectedPlayer(null);
+  };
+
   const undoLastAction = () => {
     if (actions.length === 0) return;
 
@@ -75,6 +135,22 @@ const GamePage = () => {
   const toggleTeam = () => {
     setSelectedTeam((prev) => (prev === "home" ? "away" : "home"));
   };
+
+  // Mock roster data - in a real app, this would come from your data source
+  const rosterPlayers: Player[] = [
+    { id: "1", name: "John Smith", number: "23", position: "PG" },
+    { id: "2", name: "Mike Johnson", number: "15", position: "SG" },
+    { id: "3", name: "David Brown", number: "32", position: "SF" },
+    { id: "4", name: "Chris Wilson", number: "8", position: "PF" },
+    { id: "5", name: "Robert Davis", number: "21", position: "C" },
+    { id: "6", name: "James Miller", number: "7", position: "PG" },
+    { id: "7", name: "Kevin Garcia", number: "11", position: "SG" },
+    { id: "8", name: "Steven Martinez", number: "44", position: "SF" },
+    { id: "9", name: "Daniel Rodriguez", number: "3", position: "PF" },
+    { id: "10", name: "Matthew Lopez", number: "25", position: "C" },
+    { id: "11", name: "Anthony Gonzalez", number: "9", position: "PG" },
+    { id: "12", name: "Mark Anderson", number: "17", position: "SG" },
+  ];
 
   const ActionButton = ({
     title,
@@ -204,68 +280,110 @@ const GamePage = () => {
         <View style={styles.actionsGrid}>
           <ActionButton
             title="2pt Make"
-            onPress={() => addAction("2pt Make", 2)}
+            onPress={() => handleStatAction("2pt Make", 2)}
             style={styles.makeButton}
           />
           <ActionButton
             title="3pt Make"
-            onPress={() => addAction("3pt Make", 3)}
+            onPress={() => handleStatAction("3pt Make", 3)}
             style={styles.makeButton}
           />
           <ActionButton
             title="FT Make"
-            onPress={() => addAction("FT Make", 1)}
+            onPress={() => handleStatAction("FT Make", 1)}
             style={styles.makeButton}
           />
 
           <ActionButton
             title="2pt Miss"
-            onPress={() => addAction("2pt Miss")}
+            onPress={() => handleStatAction("2pt Miss")}
             style={styles.missButton}
           />
           <ActionButton
             title="3pt Miss"
-            onPress={() => addAction("3pt Miss")}
+            onPress={() => handleStatAction("3pt Miss")}
             style={styles.missButton}
           />
           <ActionButton
             title="FT Miss"
-            onPress={() => addAction("FT Miss")}
+            onPress={() => handleStatAction("FT Miss")}
             style={styles.missButton}
           />
 
           <ActionButton
             title="Off Reb"
-            onPress={() => addAction("Offensive Rebound")}
+            onPress={() => handleStatAction("Offensive Rebound")}
             style={styles.statButton}
           />
           <ActionButton
             title="Def Reb"
-            onPress={() => addAction("Defensive Rebound")}
+            onPress={() => handleStatAction("Defensive Rebound")}
             style={styles.statButton}
           />
           <ActionButton
             title="Assist"
-            onPress={() => addAction("Assist")}
+            onPress={() => handleStatAction("Assist")}
             style={styles.statButton}
           />
 
           <ActionButton
             title="Steal"
-            onPress={() => addAction("Steal")}
+            onPress={() => handleStatAction("Steal")}
             style={styles.statButton}
           />
           <ActionButton
             title="Block"
-            onPress={() => addAction("Block")}
+            onPress={() => handleStatAction("Block")}
             style={styles.statButton}
           />
           <ActionButton
             title="Foul"
-            onPress={() => addAction("Foul")}
+            onPress={() => handleStatAction("Foul")}
             style={styles.statButton}
           />
         </View>
+
+        {/* Player Selection Bottom Sheet */}
+        <Modal
+          visible={showPlayerSelection}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={handleClosePlayerSelection}
+        >
+          <View style={styles.bottomSheetOverlay}>
+            <View style={styles.bottomSheetContent}>
+              <View style={styles.bottomSheetHeader}>
+                <Text style={styles.bottomSheetTitle}>
+                  Select Player for {pendingAction?.type}
+                </Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={handleClosePlayerSelection}
+                >
+                  <X size={24} color={Colors.grey} />
+                </TouchableOpacity>
+              </View>
+              
+              <ScrollView style={styles.playersList} showsVerticalScrollIndicator={false}>
+                {rosterPlayers.map((player) => (
+                  <TouchableOpacity
+                    key={player.id}
+                    style={styles.playerItem}
+                    onPress={() => handlePlayerSelect(player)}
+                  >
+                    <View style={styles.playerNumber}>
+                      <Text style={styles.playerNumberText}>#{player.number}</Text>
+                    </View>
+                    <View style={styles.playerInfo}>
+                      <Text style={styles.playerName}>{player.name}</Text>
+                      <Text style={styles.playerPosition}>{player.position}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       </View>
     </>
   );
@@ -501,6 +619,74 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F4F6",
     borderWidth: 1,
     borderColor: "#E5E7EB",
+  },
+  bottomSheetOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  bottomSheetContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '70%',
+    minHeight: '50%',
+  },
+  bottomSheetHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  bottomSheetTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.dark,
+    flex: 1,
+  },
+  closeButton: {
+    padding: 4,
+  },
+  playersList: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  playerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  playerNumber: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  playerNumberText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  playerInfo: {
+    flex: 1,
+  },
+  playerName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.dark,
+    marginBottom: 4,
+  },
+  playerPosition: {
+    fontSize: 14,
+    color: Colors.grey,
+    fontWeight: '500',
   },
 });
 
