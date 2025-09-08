@@ -151,7 +151,6 @@ const GamePage = () => {
           )}
         </ScrollView>
       </View>
-        </View>
 
       {/* Scoring Actions */}
       <View style={styles.actionsGrid}>
