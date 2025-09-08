@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { Users, Undo, ArrowLeftRight } from "lucide-react-native";
@@ -9,19 +15,19 @@ interface GameAction {
   type: string;
   timestamp: string;
   points?: number;
-  team: 'home' | 'away';
+  team: "home" | "away";
 }
 
 const GamePage = () => {
-  const { id, opponent, team } = useLocalSearchParams<{ 
-    id: string; 
-    opponent?: string; 
-    team?: string; 
+  const { id, opponent, team } = useLocalSearchParams<{
+    id: string;
+    opponent?: string;
+    team?: string;
   }>();
 
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
-  const [selectedTeam, setSelectedTeam] = useState<'home' | 'away'>('home');
+  const [selectedTeam, setSelectedTeam] = useState<"home" | "away">("home");
   const [actions, setActions] = useState<GameAction[]>([]);
 
   const currentTeamName = team || "Team";
@@ -31,42 +37,51 @@ const GamePage = () => {
     const newAction: GameAction = {
       id: Date.now().toString(),
       type: actionType,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       points,
       team: selectedTeam,
     };
 
-    setActions(prev => [newAction, ...prev]);
-    
+    setActions((prev) => [newAction, ...prev]);
+
     if (points > 0) {
-      if (selectedTeam === 'home') {
-        setHomeScore(prev => prev + points);
+      if (selectedTeam === "home") {
+        setHomeScore((prev) => prev + points);
       } else {
-        setAwayScore(prev => prev + points);
+        setAwayScore((prev) => prev + points);
       }
     }
   };
 
   const undoLastAction = () => {
     if (actions.length === 0) return;
-    
+
     const lastAction = actions[0];
-    setActions(prev => prev.slice(1));
-    
-    if (lastAction.points && lastAction.points > 0) {
-      if (lastAction.team === 'home') {
-        setHomeScore(prev => Math.max(0, prev - lastAction.points));
+    setActions((prev) => prev.slice(1));
+
+    const points = lastAction.points ?? 0;
+    if (points > 0) {
+      if (lastAction.team === "home") {
+        setHomeScore((prev) => Math.max(0, prev - points));
       } else {
-        setAwayScore(prev => Math.max(0, prev - lastAction.points));
+        setAwayScore((prev) => Math.max(0, prev - points));
       }
     }
   };
 
   const toggleTeam = () => {
-    setSelectedTeam(prev => prev === 'home' ? 'away' : 'home');
+    setSelectedTeam((prev) => (prev === "home" ? "away" : "home"));
   };
 
-  const ActionButton = ({ title, onPress, style, textStyle }: {
+  const ActionButton = ({
+    title,
+    onPress,
+    style,
+    textStyle,
+  }: {
     title: string;
     onPress: () => void;
     style?: any;
@@ -90,47 +105,54 @@ const GamePage = () => {
           headerShadowVisible: true,
         }}
       />
-      
+
       <View style={styles.container}>
         {/* Game Header */}
         <View style={styles.gameHeader}>
           <View style={styles.opponentSection}>
-            <Text style={styles.opponentName}>
-              {currentTeamName}
-            </Text>
+            <Text style={styles.opponentName}>{currentTeamName}</Text>
           </View>
-          
+
           <View style={styles.scoreSection}>
-            <Text style={styles.score}>{homeScore} - {awayScore}</Text>
+            <Text style={styles.score}>
+              {homeScore} - {awayScore}
+            </Text>
             <View style={styles.liveIndicator}>
               <Text style={styles.liveText}>LIVE</Text>
             </View>
           </View>
-          
+
           <View style={styles.opponentSection}>
-            <Text style={styles.opponentName}>
-              {opponentName}
-            </Text>
+            <Text style={styles.opponentName}>{opponentName}</Text>
           </View>
         </View>
 
         {/* Team Selection Toggle */}
         <View style={styles.teamToggleContainer}>
           <Text style={styles.teamToggleLabel}>Recording for:</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[
               styles.teamToggleButton,
-              selectedTeam === 'home' ? styles.homeTeamSelected : styles.awayTeamSelected
-            ]} 
+              selectedTeam === "home"
+                ? styles.homeTeamSelected
+                : styles.awayTeamSelected,
+            ]}
             onPress={toggleTeam}
           >
-            <Text style={[
-              styles.teamToggleText,
-              selectedTeam === 'home' ? styles.homeTeamText : styles.awayTeamText
-            ]}>
-              {selectedTeam === 'home' ? currentTeamName : opponentName}
+            <Text
+              style={[
+                styles.teamToggleText,
+                selectedTeam === "home"
+                  ? styles.homeTeamText
+                  : styles.awayTeamText,
+              ]}
+            >
+              {selectedTeam === "home" ? currentTeamName : opponentName}
             </Text>
-            <ArrowLeftRight size={16} color={selectedTeam === 'home' ? '#2196F3' : '#EF4444'} />
+            <ArrowLeftRight
+              size={16}
+              color={selectedTeam === "home" ? "#2196F3" : "#EF4444"}
+            />
           </TouchableOpacity>
         </View>
 
@@ -140,7 +162,7 @@ const GamePage = () => {
             <Users size={20} color={Colors.grey} />
             <Text style={styles.rosterButtonText}>Roster</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.undoButton} onPress={undoLastAction}>
             <Undo size={20} color="white" />
             <Text style={styles.undoButtonText}>Undo</Text>
@@ -151,7 +173,7 @@ const GamePage = () => {
         <View style={styles.recentActionsContainer}>
           <Text style={styles.recentActionsTitle}>Recent Actions</Text>
           <View style={styles.actionsScrollContainer}>
-            <ScrollView 
+            <ScrollView
               style={styles.actionsScrollView}
               showsVerticalScrollIndicator={false}
             >
@@ -165,7 +187,9 @@ const GamePage = () => {
                     <View style={styles.actionLeft}>
                       <Text style={styles.actionText}>{action.type}</Text>
                       <Text style={styles.actionTeam}>
-                        {action.team === 'home' ? currentTeamName : opponentName}
+                        {action.team === "home"
+                          ? currentTeamName
+                          : opponentName}
                       </Text>
                     </View>
                     <Text style={styles.actionTime}>{action.timestamp}</Text>
@@ -193,7 +217,7 @@ const GamePage = () => {
             onPress={() => addAction("FT Make", 1)}
             style={styles.makeButton}
           />
-          
+
           <ActionButton
             title="2pt Miss"
             onPress={() => addAction("2pt Miss")}
@@ -209,7 +233,7 @@ const GamePage = () => {
             onPress={() => addAction("FT Miss")}
             style={styles.missButton}
           />
-          
+
           <ActionButton
             title="Off Reb"
             onPress={() => addAction("Offensive Rebound")}
@@ -225,7 +249,7 @@ const GamePage = () => {
             onPress={() => addAction("Assist")}
             style={styles.statButton}
           />
-          
+
           <ActionButton
             title="Steal"
             onPress={() => addAction("Steal")}
@@ -257,7 +281,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 10,
     backgroundColor: "#F8F9FA",
   },
   teamBox: {
