@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
   },
   teamBox: {
-    backgroundColor: "#E3F2FD",
+    backgroundColor: "#F3F4F6",
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 16,
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   teamUnderline: {
     width: 30,
     height: 3,
-    backgroundColor: "#2196F3",
+    backgroundColor: "#6B7280",
     marginTop: 4,
     borderRadius: 2,
   },
