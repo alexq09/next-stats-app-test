@@ -1,49 +1,28 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import React, { useState, useCallback, useMemo, useRef } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
-import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
+import { Users, Undo, ArrowLeftRight } from "lucide-react-native";
 import Colors from "@/constants/Colors";
-import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface GameAction {
   id: string;
   type: string;
   timestamp: string;
   points?: number;
-  team: "home" | "away";
-}
-
-interface Player {
-  id: string;
-  name: string;
-  number: string;
-  position: string;
+  team: 'home' | 'away';
 }
 
 const GamePage = () => {
-  const { id, opponent, team } = useLocalSearchParams<{
-    id: string;
-    opponent?: string;
-    team?: string;
+  const { id, opponent, team } = useLocalSearchParams<{ 
+    id: string; 
+    opponent?: string; 
+    team?: string; 
   }>();
 
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
-  const [selectedTeam, setSelectedTeam] = useState<"home" | "away">("home");
+  const [selectedTeam, setSelectedTeam] = useState<'home' | 'away'>('home');
   const [actions, setActions] = useState<GameAction[]>([]);
-  const [pendingAction, setPendingAction] = useState<{ type: string; points: number } | null>(null);
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
-
-  // Bottom sheet ref and snap points
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['50%', '70%'], []);
 
   const currentTeamName = team || "Team";
   const opponentName = opponent || "Opponent";
@@ -52,124 +31,42 @@ const GamePage = () => {
     const newAction: GameAction = {
       id: Date.now().toString(),
       type: actionType,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       points,
       team: selectedTeam,
     };
 
-    setActions((prev) => [newAction, ...prev]);
-
+    setActions(prev => [newAction, ...prev]);
+    
     if (points > 0) {
-      if (selectedTeam === "home") {
-        setHomeScore((prev) => prev + points);
+      if (selectedTeam === 'home') {
+        setHomeScore(prev => prev + points);
       } else {
-        setAwayScore((prev) => prev + points);
+        setAwayScore(prev => prev + points);
       }
     }
-  };
-
-  const addActionWithPlayer = (actionType: string, player: Player, points: number = 0) => {
-    const newAction: GameAction = {
-      id: Date.now().toString(),
-      type: actionType,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      points,
-      team: selectedTeam,
-    };
-
-    setActions((prev) => [newAction, ...prev]);
-
-    if (points > 0) {
-      if (selectedTeam === "home") {
-        setHomeScore((prev) => prev + points);
-      } else {
-        setAwayScore((prev) => prev + points);
-      }
-    }
-  };
-
-  const handleStatAction = (actionType: string, points: number = 0) => {
-    // Only show player selection for home team stat actions (non-scoring)
-    if (selectedTeam === "home" && points === 0) {
-      setPendingAction({ type: actionType, points });
-      bottomSheetRef.current?.expand();
-    } else {
-      // For away team or scoring actions, add directly
-      addAction(actionType, points);
-    }
-  };
-
-  const handlePlayerSelect = (player: Player) => {
-    if (pendingAction) {
-      addActionWithPlayer(pendingAction.type, player, pendingAction.points);
-      bottomSheetRef.current?.close();
-      setPendingAction(null);
-      setSelectedPlayer(null);
-    }
-  };
-
-  const handleSheetChanges = useCallback((index: number) => {
-    if (index === -1) {
-      // Bottom sheet is closed
-      setPendingAction(null);
-      setSelectedPlayer(null);
-    }
-  }, []);
-
-  const handleClosePlayerSelection = () => {
-    bottomSheetRef.current?.close();
-    setPendingAction(null);
-    setSelectedPlayer(null);
   };
 
   const undoLastAction = () => {
     if (actions.length === 0) return;
-
+    
     const lastAction = actions[0];
-    setActions((prev) => prev.slice(1));
-
-    const points = lastAction.points ?? 0;
-    if (points > 0) {
-      if (lastAction.team === "home") {
-        setHomeScore((prev) => Math.max(0, prev - points));
+    setActions(prev => prev.slice(1));
+    
+    if (lastAction.points && lastAction.points > 0) {
+      if (lastAction.team === 'home') {
+        setHomeScore(prev => Math.max(0, prev - lastAction.points));
       } else {
-        setAwayScore((prev) => Math.max(0, prev - points));
+        setAwayScore(prev => Math.max(0, prev - lastAction.points));
       }
     }
   };
 
   const toggleTeam = () => {
-    setSelectedTeam((prev) => (prev === "home" ? "away" : "home"));
+    setSelectedTeam(prev => prev === 'home' ? 'away' : 'home');
   };
 
-  // Mock roster data - in a real app, this would come from your data source
-  const rosterPlayers: Player[] = [
-    { id: "1", name: "John Smith", number: "23", position: "PG" },
-    { id: "2", name: "Mike Johnson", number: "15", position: "SG" },
-    { id: "3", name: "David Brown", number: "32", position: "SF" },
-    { id: "4", name: "Chris Wilson", number: "8", position: "PF" },
-    { id: "5", name: "Robert Davis", number: "21", position: "C" },
-    { id: "6", name: "James Miller", number: "7", position: "PG" },
-    { id: "7", name: "Kevin Garcia", number: "11", position: "SG" },
-    { id: "8", name: "Steven Martinez", number: "44", position: "SF" },
-    { id: "9", name: "Daniel Rodriguez", number: "3", position: "PF" },
-    { id: "10", name: "Matthew Lopez", number: "25", position: "C" },
-    { id: "11", name: "Anthony Gonzalez", number: "9", position: "PG" },
-    { id: "12", name: "Mark Anderson", number: "17", position: "SG" },
-  ];
-
-  const ActionButton = ({
-    title,
-    onPress,
-    style,
-    textStyle,
-  }: {
+  const ActionButton = ({ title, onPress, style, textStyle }: {
     title: string;
     onPress: () => void;
     style?: any;
@@ -181,7 +78,7 @@ const GamePage = () => {
   );
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <>
       <Stack.Screen
         options={{
           headerTitle: "Game",
@@ -193,54 +90,47 @@ const GamePage = () => {
           headerShadowVisible: true,
         }}
       />
-
+      
       <View style={styles.container}>
         {/* Game Header */}
         <View style={styles.gameHeader}>
           <View style={styles.opponentSection}>
-            <Text style={styles.opponentName}>{currentTeamName}</Text>
-          </View>
-
-          <View style={styles.scoreSection}>
-            <Text style={styles.score}>
-              {homeScore} - {awayScore}
+            <Text style={styles.opponentName}>
+              {currentTeamName}
             </Text>
+          </View>
+          
+          <View style={styles.scoreSection}>
+            <Text style={styles.score}>{homeScore} - {awayScore}</Text>
             <View style={styles.liveIndicator}>
               <Text style={styles.liveText}>LIVE</Text>
             </View>
           </View>
-
+          
           <View style={styles.opponentSection}>
-            <Text style={styles.opponentName}>{opponentName}</Text>
+            <Text style={styles.opponentName}>
+              {opponentName}
+            </Text>
           </View>
         </View>
 
         {/* Team Selection Toggle */}
         <View style={styles.teamToggleContainer}>
           <Text style={styles.teamToggleLabel}>Recording for:</Text>
-          <TouchableOpacity
+          <TouchableOpacity 
             style={[
               styles.teamToggleButton,
-              selectedTeam === "home"
-                ? styles.homeTeamSelected
-                : styles.awayTeamSelected,
-            ]}
+              selectedTeam === 'home' ? styles.homeTeamSelected : styles.awayTeamSelected
+            ]} 
             onPress={toggleTeam}
           >
-            <Text
-              style={[
-                styles.teamToggleText,
-                selectedTeam === "home"
-                  ? styles.homeTeamText
-                  : styles.awayTeamText,
-              ]}
-            >
-              {selectedTeam === "home" ? currentTeamName : opponentName}
+            <Text style={[
+              styles.teamToggleText,
+              selectedTeam === 'home' ? styles.homeTeamText : styles.awayTeamText
+            ]}>
+              {selectedTeam === 'home' ? currentTeamName : opponentName}
             </Text>
-            <ArrowLeftRight
-              size={16}
-              color={selectedTeam === "home" ? "#2196F3" : "#EF4444"}
-            />
+            <ArrowLeftRight size={16} color={selectedTeam === 'home' ? '#2196F3' : '#EF4444'} />
           </TouchableOpacity>
         </View>
 
@@ -250,7 +140,7 @@ const GamePage = () => {
             <Users size={20} color={Colors.grey} />
             <Text style={styles.rosterButtonText}>Roster</Text>
           </TouchableOpacity>
-
+          
           <TouchableOpacity style={styles.undoButton} onPress={undoLastAction}>
             <Undo size={20} color="white" />
             <Text style={styles.undoButtonText}>Undo</Text>
@@ -261,7 +151,7 @@ const GamePage = () => {
         <View style={styles.recentActionsContainer}>
           <Text style={styles.recentActionsTitle}>Recent Actions</Text>
           <View style={styles.actionsScrollContainer}>
-            <ScrollView
+            <ScrollView 
               style={styles.actionsScrollView}
               showsVerticalScrollIndicator={false}
             >
@@ -275,9 +165,7 @@ const GamePage = () => {
                     <View style={styles.actionLeft}>
                       <Text style={styles.actionText}>{action.type}</Text>
                       <Text style={styles.actionTeam}>
-                        {action.team === "home"
-                          ? currentTeamName
-                          : opponentName}
+                        {action.team === 'home' ? currentTeamName : opponentName}
                       </Text>
                     </View>
                     <Text style={styles.actionTime}>{action.timestamp}</Text>
@@ -292,117 +180,70 @@ const GamePage = () => {
         <View style={styles.actionsGrid}>
           <ActionButton
             title="2pt Make"
-            onPress={() => handleStatAction("2pt Make", 2)}
+            onPress={() => addAction("2pt Make", 2)}
             style={styles.makeButton}
           />
           <ActionButton
             title="3pt Make"
-            onPress={() => handleStatAction("3pt Make", 3)}
+            onPress={() => addAction("3pt Make", 3)}
             style={styles.makeButton}
           />
           <ActionButton
             title="FT Make"
-            onPress={() => handleStatAction("FT Make", 1)}
+            onPress={() => addAction("FT Make", 1)}
             style={styles.makeButton}
           />
-
+          
           <ActionButton
             title="2pt Miss"
-            onPress={() => handleStatAction("2pt Miss")}
+            onPress={() => addAction("2pt Miss")}
             style={styles.missButton}
           />
           <ActionButton
             title="3pt Miss"
-            onPress={() => handleStatAction("3pt Miss")}
+            onPress={() => addAction("3pt Miss")}
             style={styles.missButton}
           />
           <ActionButton
             title="FT Miss"
-            onPress={() => handleStatAction("FT Miss")}
+            onPress={() => addAction("FT Miss")}
             style={styles.missButton}
           />
-
+          
           <ActionButton
             title="Off Reb"
-            onPress={() => handleStatAction("Offensive Rebound")}
+            onPress={() => addAction("Offensive Rebound")}
             style={styles.statButton}
           />
           <ActionButton
             title="Def Reb"
-            onPress={() => handleStatAction("Defensive Rebound")}
+            onPress={() => addAction("Defensive Rebound")}
             style={styles.statButton}
           />
           <ActionButton
             title="Assist"
-            onPress={() => handleStatAction("Assist")}
+            onPress={() => addAction("Assist")}
             style={styles.statButton}
           />
-
+          
           <ActionButton
             title="Steal"
-            onPress={() => handleStatAction("Steal")}
+            onPress={() => addAction("Steal")}
             style={styles.statButton}
           />
           <ActionButton
             title="Block"
-            onPress={() => handleStatAction("Block")}
+            onPress={() => addAction("Block")}
             style={styles.statButton}
           />
           <ActionButton
             title="Foul"
-            onPress={() => handleStatAction("Foul")}
+            onPress={() => addAction("Foul")}
             style={styles.statButton}
           />
         </View>
-
-        {/* Native Bottom Sheet for Player Selection */}
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={-1}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}
-          enablePanDownToClose={true}
-          backgroundStyle={styles.bottomSheetBackground}
-          handleIndicatorStyle={styles.bottomSheetIndicator}
-        >
-          <BottomSheetView style={styles.bottomSheetContent}>
-            <View style={styles.bottomSheetHeader}>
-              <Text style={styles.bottomSheetTitle}>
-                Select Player for {pendingAction?.type}
-              </Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleClosePlayerSelection}
-              >
-                <X size={24} color="#9CA3AF" />
-              </TouchableOpacity>
-            </View>
-            
-            <BottomSheetScrollView 
-              style={styles.playersList} 
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.playersListContent}
-            >
-              {rosterPlayers.map((player) => (
-                <TouchableOpacity
-                  key={player.id}
-                  style={styles.playerItem}
-                  onPress={() => handlePlayerSelect(player)}
-                >
-                  <View style={styles.playerNumber}>
-                    <Text style={styles.playerNumberText}>#{player.number}</Text>
-                  </View>
-                  <View style={styles.playerInfo}>
-                    <Text style={styles.playerName}>{player.name}</Text>
-                    <Text style={styles.playerPosition}>{player.position}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </BottomSheetScrollView>
-          </BottomSheetView>
-        </BottomSheet>
       </View>
-    </GestureHandlerRootView>
+    </>
   );
 };
 
@@ -416,7 +257,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 20,
     backgroundColor: "#F8F9FA",
   },
   teamBox: {
@@ -636,77 +477,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F4F6",
     borderWidth: 1,
     borderColor: "#E5E7EB",
-  },
-  bottomSheetBackground: {
-    backgroundColor: '#1F2937',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  bottomSheetIndicator: {
-    backgroundColor: '#9CA3AF',
-    width: 40,
-  },
-  bottomSheetContent: {
-    flex: 1,
-  },
-  bottomSheetHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#374151',
-  },
-  bottomSheetTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    flex: 1,
-  },
-  closeButton: {
-    padding: 4,
-  },
-  playersList: {
-    flex: 1,
-  },
-  playersListContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  playerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#374151',
-  },
-  playerNumber: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: Colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  playerNumberText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  playerInfo: {
-    flex: 1,
-  },
-  playerName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
-    marginBottom: 4,
-  },
-  playerPosition: {
-    fontSize: 14,
-    color: '#9CA3AF',
-    fontWeight: '500',
   },
 });
 
