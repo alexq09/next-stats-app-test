@@ -266,12 +266,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     alignItems: "center",
-    minWidth: 80,
+    flex: 1,
+    maxWidth: 120,
   },
   teamAbbreviation: {
     fontSize: 24,
     fontWeight: "bold",
     color: Colors.dark,
+    textAlign: "center",
   },
   teamUnderline: {
     width: 30,
@@ -302,13 +304,15 @@ const styles = StyleSheet.create({
   },
   opponentSection: {
     alignItems: "center",
-    minWidth: 80,
+    flex: 1,
+    maxWidth: 120,
   },
   opponentName: {
     fontSize: 18,
     fontWeight: "bold",
     color: Colors.dark,
     textAlign: "center",
+    flexWrap: "wrap",
   },
   teamToggleContainer: {
     flexDirection: "row",
