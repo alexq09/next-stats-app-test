@@ -335,42 +335,39 @@ const GamePage = () => {
           backgroundStyle={styles.bottomSheetBackground}
           handleIndicatorStyle={styles.bottomSheetIndicator}
         >
-          <BottomSheetView style={styles.bottomSheetContent}>
-            <View style={styles.bottomSheetHeader}>
-              <Text style={styles.bottomSheetTitle}>
-                Select Player for {pendingAction?.type}
-              </Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleClosePlayerSelection}
-              >
-                <X size={24} color="#9CA3AF" />
-              </TouchableOpacity>
-            </View>
-            
-            <BottomSheetScrollView 
-              style={styles.playersList} 
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.playersListContent}
-              nestedScrollEnabled={true}
+          <View style={styles.bottomSheetHeader}>
+            <Text style={styles.bottomSheetTitle}>
+              Select Player for {pendingAction?.type}
+            </Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={handleClosePlayerSelection}
             >
-              {rosterPlayers.map((player) => (
-                <TouchableOpacity
-                  key={player.id}
-                  style={styles.playerItem}
-                  onPress={() => handlePlayerSelect(player)}
-                >
-                  <View style={styles.playerNumber}>
-                    <Text style={styles.playerNumberText}>#{player.number}</Text>
-                  </View>
-                  <View style={styles.playerInfo}>
-                    <Text style={styles.playerName}>{player.name}</Text>
-                    <Text style={styles.playerPosition}>{player.position}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </BottomSheetScrollView>
-          </BottomSheetView>
+              <X size={24} color="#9CA3AF" />
+            </TouchableOpacity>
+          </View>
+          
+          <BottomSheetScrollView 
+            style={styles.playersList} 
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.playersListContent}
+          >
+            {rosterPlayers.map((player) => (
+              <TouchableOpacity
+                key={player.id}
+                style={styles.playerItem}
+                onPress={() => handlePlayerSelect(player)}
+              >
+                <View style={styles.playerNumber}>
+                  <Text style={styles.playerNumberText}>#{player.number}</Text>
+                </View>
+                <View style={styles.playerInfo}>
+                  <Text style={styles.playerName}>{player.name}</Text>
+                  <Text style={styles.playerPosition}>{player.position}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </BottomSheetScrollView>
         </BottomSheet>
       </View>
     </GestureHandlerRootView>
@@ -617,9 +614,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#9CA3AF',
     width: 40,
   },
-  bottomSheetContent: {
-    flex: 1,
-  },
   bottomSheetHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -638,7 +632,6 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   playersList: {
-    flex: 1,
   },
   playersListContent: {
     paddingHorizontal: 20,
