@@ -75,7 +75,7 @@ const GamePage = () => {
   );
 
   return (
-    <>
+    <View style={styles.container}>
       <Stack.Screen
         options={{
           headerTitle: "Game",
@@ -88,151 +88,151 @@ const GamePage = () => {
         }}
       />
       
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Game Header */}
-        <View style={styles.gameHeader}>
-          <View style={styles.teamContainer}>
-            <View style={styles.teamBox}>
-              <Text style={styles.teamAbbreviation}>WWP</Text>
-            </View>
-          </View>
-          
-          <View style={styles.scoreContainer}>
-            <Text style={styles.score}>{homeScore} - {awayScore}</Text>
-            <View style={styles.liveIndicator}>
-              <Text style={styles.liveText}>LIVE</Text>
-            </View>
-          </View>
-          
-          <View style={styles.teamContainer}>
-            <Text style={styles.teamName}>
-              {opponent || 'Opponent'}
-            </Text>
+      {/* Game Header */}
+      <View style={styles.gameHeader}>
+        <View style={styles.teamContainer}>
+          <View style={styles.teamBox}>
+            <Text style={styles.teamAbbreviation}>WWP</Text>
           </View>
         </View>
-
-        {/* Action Buttons Row 1 */}
-        <View style={styles.actionRow}>
-          <TouchableOpacity style={styles.rosterButton} activeOpacity={0.8}>
-            <Users size={20} color={Colors.grey} />
-            <Text style={styles.rosterButtonText}>Roster</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.undoButton} 
-            onPress={handleUndo}
-            activeOpacity={0.8}
-          >
-            <Undo2 size={20} color="white" />
-            <Text style={styles.undoButtonText}>Undo</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Recent Actions */}
-        <View style={styles.recentActionsContainer}>
-          <Text style={styles.sectionTitle}>Recent Actions</Text>
-          <View style={styles.actionsContent}>
-            {recentActions.length === 0 ? (
-              <Text style={styles.noActionsText}>No actions yet</Text>
-            ) : (
-              recentActions.slice(0, 5).map((action) => (
-                <View key={action.id} style={styles.actionItem}>
-                  <Text style={styles.actionText}>{action.description}</Text>
-                  <Text style={styles.actionTime}>
-                    {action.timestamp.toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
-                  </Text>
-                </View>
-              ))
-            )}
+        
+        <View style={styles.scoreContainer}>
+          <Text style={styles.score}>{homeScore} - {awayScore}</Text>
+          <View style={styles.liveIndicator}>
+            <Text style={styles.liveText}>LIVE</Text>
           </View>
         </View>
+        
+        <View style={styles.teamContainer}>
+          <Text style={styles.teamName}>
+            {opponent || 'Opponent'}
+          </Text>
+        </View>
+      </View>
 
-        {/* Scoring Actions */}
-        <View style={styles.actionsGrid}>
-          <ActionButton
-            title="2pt Make"
-            onPress={() => handleAction('2pt Make', 2)}
-            backgroundColor="#22C55E"
-          />
-          <ActionButton
-            title="3pt Make"
-            onPress={() => handleAction('3pt Make', 3)}
-            backgroundColor="#22C55E"
-          />
-          <ActionButton
-            title="FT Make"
-            onPress={() => handleAction('FT Make', 1)}
-            backgroundColor="#22C55E"
-          />
+      {/* Action Buttons Row 1 */}
+      <View style={styles.actionRow}>
+        <TouchableOpacity style={styles.rosterButton} activeOpacity={0.8}>
+          <Users size={20} color={Colors.grey} />
+          <Text style={styles.rosterButtonText}>Roster</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.undoButton} 
+          onPress={handleUndo}
+          activeOpacity={0.8}
+        >
+          <Undo2 size={20} color="white" />
+          <Text style={styles.undoButtonText}>Undo</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Recent Actions */}
+      <View style={styles.recentActionsContainer}>
+        <Text style={styles.sectionTitle}>Recent Actions</Text>
+        <ScrollView 
+          style={styles.actionsScrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          {recentActions.length === 0 ? (
+            <Text style={styles.noActionsText}>No actions yet</Text>
+          ) : (
+            recentActions.map((action) => (
+              <View key={action.id} style={styles.actionItem}>
+                <Text style={styles.actionText}>{action.description}</Text>
+                <Text style={styles.actionTime}>
+                  {action.timestamp.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                  })}
+                </Text>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      </View>
         </View>
 
-        <View style={styles.actionsGrid}>
-          <ActionButton
-            title="2pt Miss"
-            onPress={() => handleAction('2pt Miss')}
-            backgroundColor="#EF4444"
-          />
-          <ActionButton
-            title="3pt Miss"
-            onPress={() => handleAction('3pt Miss')}
-            backgroundColor="#EF4444"
-          />
-          <ActionButton
-            title="FT Miss"
-            onPress={() => handleAction('FT Miss')}
-            backgroundColor="#EF4444"
-          />
-        </View>
+      {/* Scoring Actions */}
+      <View style={styles.actionsGrid}>
+        <ActionButton
+          title="2pt Make"
+          onPress={() => handleAction('2pt Make', 2)}
+          backgroundColor="#22C55E"
+        />
+        <ActionButton
+          title="3pt Make"
+          onPress={() => handleAction('3pt Make', 3)}
+          backgroundColor="#22C55E"
+        />
+        <ActionButton
+          title="FT Make"
+          onPress={() => handleAction('FT Make', 1)}
+          backgroundColor="#22C55E"
+        />
+      </View>
 
-        {/* Other Actions */}
-        <View style={styles.actionsGrid}>
-          <ActionButton
-            title="Off Reb"
-            onPress={() => handleAction('Off Reb')}
-            backgroundColor="#F3F4F6"
-            textColor={Colors.dark}
-          />
-          <ActionButton
-            title="Def Reb"
-            onPress={() => handleAction('Def Reb')}
-            backgroundColor="#F3F4F6"
-            textColor={Colors.dark}
-          />
-          <ActionButton
-            title="Assist"
-            onPress={() => handleAction('Assist')}
-            backgroundColor="#F3F4F6"
-            textColor={Colors.dark}
-          />
-        </View>
+      <View style={styles.actionsGrid}>
+        <ActionButton
+          title="2pt Miss"
+          onPress={() => handleAction('2pt Miss')}
+          backgroundColor="#EF4444"
+        />
+        <ActionButton
+          title="3pt Miss"
+          onPress={() => handleAction('3pt Miss')}
+          backgroundColor="#EF4444"
+        />
+        <ActionButton
+          title="FT Miss"
+          onPress={() => handleAction('FT Miss')}
+          backgroundColor="#EF4444"
+        />
+      </View>
 
-        <View style={styles.actionsGrid}>
-          <ActionButton
-            title="Steal"
-            onPress={() => handleAction('Steal')}
-            backgroundColor="#F3F4F6"
-            textColor={Colors.dark}
-          />
-          <ActionButton
-            title="Block"
-            onPress={() => handleAction('Block')}
-            backgroundColor="#F3F4F6"
-            textColor={Colors.dark}
-          />
-          <ActionButton
-            title="Foul"
-            onPress={() => handleAction('Foul')}
-            backgroundColor="#F3F4F6"
-            textColor={Colors.dark}
-          />
-        </View>
+      {/* Other Actions */}
+      <View style={styles.actionsGrid}>
+        <ActionButton
+          title="Off Reb"
+          onPress={() => handleAction('Off Reb')}
+          backgroundColor="#F3F4F6"
+          textColor={Colors.dark}
+        />
+        <ActionButton
+          title="Def Reb"
+          onPress={() => handleAction('Def Reb')}
+          backgroundColor="#F3F4F6"
+          textColor={Colors.dark}
+        />
+        <ActionButton
+          title="Assist"
+          onPress={() => handleAction('Assist')}
+          backgroundColor="#F3F4F6"
+          textColor={Colors.dark}
+        />
+      </View>
 
-        <View style={styles.bottomPadding} />
-      </ScrollView>
-    </>
+      <View style={styles.actionsGrid}>
+        <ActionButton
+          title="Steal"
+          onPress={() => handleAction('Steal')}
+          backgroundColor="#F3F4F6"
+          textColor={Colors.dark}
+        />
+        <ActionButton
+          title="Block"
+          onPress={() => handleAction('Block')}
+          backgroundColor="#F3F4F6"
+          textColor={Colors.dark}
+        />
+        <ActionButton
+          title="Foul"
+          onPress={() => handleAction('Foul')}
+          backgroundColor="#F3F4F6"
+          textColor={Colors.dark}
+        />
+      </View>
+    </View>
   );
 };
 
@@ -248,7 +248,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 24,
     backgroundColor: 'white',
-    marginBottom: 16,
   },
   teamContainer: {
     flex: 1,
@@ -299,8 +298,9 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     paddingHorizontal: 20,
-    marginBottom: 24,
+    paddingVertical: 16,
     gap: 12,
+    backgroundColor: 'white',
   },
   rosterButton: {
     flex: 1,
@@ -333,11 +333,10 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   recentActionsContainer: {
-    backgroundColor: 'white',
-    marginHorizontal: 20,
-    marginBottom: 24,
-    borderRadius: 12,
-    padding: 20,
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    paddingHorizontal: 20,
+    paddingTop: 16,
   },
   sectionTitle: {
     fontSize: 18,
@@ -345,8 +344,13 @@ const styles = StyleSheet.create({
     color: Colors.dark,
     marginBottom: 16,
   },
-  actionsContent: {
-    minHeight: 100,
+  actionsScrollView: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    marginBottom: 16,
   },
   noActionsText: {
     fontSize: 16,
@@ -395,9 +399,6 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  bottomPadding: {
-    height: 40,
   },
 });
 
