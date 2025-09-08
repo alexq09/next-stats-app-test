@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-} from "react-native";
 import React, { useState, useCallback, useMemo, useRef } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
@@ -38,7 +37,6 @@ const GamePage = () => {
   const [awayScore, setAwayScore] = useState(0);
   const [selectedTeam, setSelectedTeam] = useState<"home" | "away">("home");
   const [actions, setActions] = useState<GameAction[]>([]);
-  const [showPlayerSelection, setShowPlayerSelection] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ type: string; points: number } | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
