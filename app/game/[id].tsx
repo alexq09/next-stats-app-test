@@ -4,12 +4,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Modal,
 } from "react-native";
 import React, { useState } from "react";
+import React, { useState, useCallback, useMemo, useRef } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
 import Colors from "@/constants/Colors";
+import BottomSheet, { BottomSheetView, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface GameAction {
   id: string;
@@ -40,6 +42,10 @@ const GamePage = () => {
   const [showPlayerSelection, setShowPlayerSelection] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ type: string; points: number } | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+
+  // Bottom sheet ref and snap points
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['50%', '70%'], []);
 
   const currentTeamName = team || "Team";
   const opponentName = opponent || "Opponent";
@@ -94,7 +100,7 @@ const GamePage = () => {
     // Only show player selection for home team stat actions (non-scoring)
     if (selectedTeam === "home" && points === 0) {
       setPendingAction({ type: actionType, points });
-      setShowPlayerSelection(true);
+      bottomSheetRef.current?.expand();
     } else {
       // For away team or scoring actions, add directly
       addAction(actionType, points);
@@ -104,14 +110,22 @@ const GamePage = () => {
   const handlePlayerSelect = (player: Player) => {
     if (pendingAction) {
       addActionWithPlayer(pendingAction.type, player, pendingAction.points);
-      setShowPlayerSelection(false);
+      bottomSheetRef.current?.close();
       setPendingAction(null);
       setSelectedPlayer(null);
     }
   };
 
+  const handleSheetChanges = useCallback((index: number) => {
+    if (index === -1) {
+      // Bottom sheet is closed
+      setPendingAction(null);
+      setSelectedPlayer(null);
+    }
+  }, []);
+
   const handleClosePlayerSelection = () => {
-    setShowPlayerSelection(false);
+    bottomSheetRef.current?.close();
     setPendingAction(null);
     setSelectedPlayer(null);
   };
@@ -169,7 +183,7 @@ const GamePage = () => {
   );
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack.Screen
         options={{
           headerTitle: "Game",
@@ -343,49 +357,54 @@ const GamePage = () => {
           />
         </View>
 
-        {/* Player Selection Bottom Sheet */}
-        <Modal
-          visible={showPlayerSelection}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={handleClosePlayerSelection}
+        {/* Native Bottom Sheet for Player Selection */}
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={-1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}
+          enablePanDownToClose={true}
+          backgroundStyle={styles.bottomSheetBackground}
+          handleIndicatorStyle={styles.bottomSheetIndicator}
         >
-          <View style={styles.bottomSheetOverlay}>
-            <View style={styles.bottomSheetContent}>
-              <View style={styles.bottomSheetHeader}>
-                <Text style={styles.bottomSheetTitle}>
-                  Select Player for {pendingAction?.type}
-                </Text>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={handleClosePlayerSelection}
-                >
-                  <X size={24} color={Colors.grey} />
-                </TouchableOpacity>
-              </View>
-              
-              <ScrollView style={styles.playersList} showsVerticalScrollIndicator={false}>
-                {rosterPlayers.map((player) => (
-                  <TouchableOpacity
-                    key={player.id}
-                    style={styles.playerItem}
-                    onPress={() => handlePlayerSelect(player)}
-                  >
-                    <View style={styles.playerNumber}>
-                      <Text style={styles.playerNumberText}>#{player.number}</Text>
-                    </View>
-                    <View style={styles.playerInfo}>
-                      <Text style={styles.playerName}>{player.name}</Text>
-                      <Text style={styles.playerPosition}>{player.position}</Text>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+          <BottomSheetView style={styles.bottomSheetContent}>
+            <View style={styles.bottomSheetHeader}>
+              <Text style={styles.bottomSheetTitle}>
+                Select Player for {pendingAction?.type}
+              </Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={handleClosePlayerSelection}
+              >
+                <X size={24} color="#9CA3AF" />
+              </TouchableOpacity>
             </View>
-          </View>
-        </Modal>
+            
+            <BottomSheetScrollView 
+              style={styles.playersList} 
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.playersListContent}
+            >
+              {rosterPlayers.map((player) => (
+                <TouchableOpacity
+                  key={player.id}
+                  style={styles.playerItem}
+                  onPress={() => handlePlayerSelect(player)}
+                >
+                  <View style={styles.playerNumber}>
+                    <Text style={styles.playerNumberText}>#{player.number}</Text>
+                  </View>
+                  <View style={styles.playerInfo}>
+                    <Text style={styles.playerName}>{player.name}</Text>
+                    <Text style={styles.playerPosition}>{player.position}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </BottomSheetScrollView>
+          </BottomSheetView>
+        </BottomSheet>
       </View>
-    </>
+    </GestureHandlerRootView>
   );
 };
 
@@ -620,16 +639,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E5E7EB",
   },
-  bottomSheetOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  bottomSheetContent: {
+  bottomSheetBackground: {
     backgroundColor: '#1F2937',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '70%',
-    minHeight: '50%',
+  },
+  bottomSheetIndicator: {
+    backgroundColor: '#9CA3AF',
+    width: 40,
+  },
+  bottomSheetContent: {
+    flex: 1,
   },
   bottomSheetHeader: {
     flexDirection: 'row',
@@ -637,7 +657,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: '#374151',
   },
   bottomSheetTitle: {
     fontSize: 18,
@@ -650,14 +670,17 @@ const styles = StyleSheet.create({
   },
   playersList: {
     flex: 1,
+  },
+  playersListContent: {
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   playerItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: '#374151',
   },
   playerNumber: {
     width: 50,
