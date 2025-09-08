@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+} from "react-native";
 import React, { useState, useCallback, useMemo, useRef } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
