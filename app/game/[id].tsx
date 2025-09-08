@@ -261,8 +261,6 @@ const styles = StyleSheet.create({
   },
   teamBox: {
     backgroundColor: "#E3F2FD",
-    borderWidth: 2,
-    borderColor: "#2196F3",
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 16,
