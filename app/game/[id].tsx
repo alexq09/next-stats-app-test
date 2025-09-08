@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
-import { Users, Undo } from "lucide-react-native";
+import { Users, Undo, ArrowLeftRight } from "lucide-react-native";
 import Colors from "@/constants/Colors";
 
 interface GameAction {
@@ -9,6 +9,7 @@ interface GameAction {
   type: string;
   timestamp: string;
   points?: number;
+  team: 'home' | 'away';
 }
 
 const GamePage = () => {
@@ -20,7 +21,11 @@ const GamePage = () => {
 
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
+  const [selectedTeam, setSelectedTeam] = useState<'home' | 'away'>('home');
   const [actions, setActions] = useState<GameAction[]>([]);
+
+  const currentTeamName = team || "Team";
+  const opponentName = opponent || "Opponent";
 
   const addAction = (actionType: string, points: number = 0) => {
     const newAction: GameAction = {
@@ -28,12 +33,17 @@ const GamePage = () => {
       type: actionType,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       points,
+      team: selectedTeam,
     };
 
     setActions(prev => [newAction, ...prev]);
     
     if (points > 0) {
-      setHomeScore(prev => prev + points);
+      if (selectedTeam === 'home') {
+        setHomeScore(prev => prev + points);
+      } else {
+        setAwayScore(prev => prev + points);
+      }
     }
   };
 
@@ -44,8 +54,16 @@ const GamePage = () => {
     setActions(prev => prev.slice(1));
     
     if (lastAction.points && lastAction.points > 0) {
-      setHomeScore(prev => Math.max(0, prev - lastAction.points));
+      if (lastAction.team === 'home') {
+        setHomeScore(prev => Math.max(0, prev - lastAction.points));
+      } else {
+        setAwayScore(prev => Math.max(0, prev - lastAction.points));
+      }
     }
+  };
+
+  const toggleTeam = () => {
+    setSelectedTeam(prev => prev === 'home' ? 'away' : 'home');
   };
 
   const ActionButton = ({ title, onPress, style, textStyle }: {
@@ -90,9 +108,29 @@ const GamePage = () => {
           
           <View style={styles.opponentSection}>
             <Text style={styles.opponentName}>
-              {opponent || "Opponent"}
+              {opponentName}
             </Text>
           </View>
+        </View>
+
+        {/* Team Selection Toggle */}
+        <View style={styles.teamToggleContainer}>
+          <Text style={styles.teamToggleLabel}>Recording for:</Text>
+          <TouchableOpacity 
+            style={[
+              styles.teamToggleButton,
+              selectedTeam === 'home' ? styles.homeTeamSelected : styles.awayTeamSelected
+            ]} 
+            onPress={toggleTeam}
+          >
+            <Text style={[
+              styles.teamToggleText,
+              selectedTeam === 'home' ? styles.homeTeamText : styles.awayTeamText
+            ]}>
+              {selectedTeam === 'home' ? currentTeamName : opponentName}
+            </Text>
+            <ArrowLeftRight size={16} color={selectedTeam === 'home' ? '#2196F3' : '#EF4444'} />
+          </TouchableOpacity>
         </View>
 
         {/* Action Buttons Row */}
@@ -123,7 +161,12 @@ const GamePage = () => {
               ) : (
                 actions.map((action) => (
                   <View key={action.id} style={styles.actionItem}>
-                    <Text style={styles.actionText}>{action.type}</Text>
+                    <View style={styles.actionLeft}>
+                      <Text style={styles.actionText}>{action.type}</Text>
+                      <Text style={styles.actionTeam}>
+                        {action.team === 'home' ? currentTeamName : opponentName}
+                      </Text>
+                    </View>
                     <Text style={styles.actionTime}>{action.timestamp}</Text>
                   </View>
                 ))
@@ -268,6 +311,47 @@ const styles = StyleSheet.create({
     color: Colors.dark,
     textAlign: "center",
   },
+  teamToggleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: "#F8F9FA",
+  },
+  teamToggleLabel: {
+    fontSize: 16,
+    color: Colors.grey,
+    marginRight: 12,
+    fontWeight: "500",
+  },
+  teamToggleButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 2,
+    gap: 8,
+  },
+  homeTeamSelected: {
+    backgroundColor: "#E3F2FD",
+    borderColor: "#2196F3",
+  },
+  awayTeamSelected: {
+    backgroundColor: "#FFEBEE",
+    borderColor: "#EF4444",
+  },
+  teamToggleText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  homeTeamText: {
+    color: "#2196F3",
+  },
+  awayTeamText: {
+    color: "#EF4444",
+  },
   actionButtonsRow: {
     flexDirection: "row",
     paddingHorizontal: 20,
@@ -344,10 +428,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#F3F4F6",
   },
+  actionLeft: {
+    flex: 1,
+  },
   actionText: {
     fontSize: 16,
     color: Colors.dark,
     fontWeight: "500",
+    marginBottom: 2,
+  },
+  actionTeam: {
+    fontSize: 14,
+    color: Colors.grey,
+    fontStyle: "italic",
   },
   actionTime: {
     fontSize: 14,
