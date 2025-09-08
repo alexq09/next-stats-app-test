@@ -625,7 +625,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   bottomSheetContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#1F2937',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '70%',
@@ -642,7 +642,7 @@ const styles = StyleSheet.create({
   bottomSheetTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.dark,
+    color: 'white',
     flex: 1,
   },
   closeButton: {
@@ -679,12 +679,12 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.dark,
+    color: 'white',
     marginBottom: 4,
   },
   playerPosition: {
     fontSize: 14,
-    color: Colors.grey,
+    color: '#9CA3AF',
     fontWeight: '500',
   },
 });
