@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, Stack } from 'expo-router';
 import { useTeamDetails } from '@/hooks/useTeamDetails';
 import TeamHeader from '@/components/team/TeamHeader';
 import SeasonSelector from '@/components/team/SeasonSelector';
@@ -46,31 +46,44 @@ const TeamPage = () => {
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <TeamHeader team={teamDetails} />
-      
-      <SeasonSelector
-        seasons={availableSeasons}
-        selectedSeason={selectedSeasonYear}
-        onSeasonChange={setSelectedSeasonYear}
+    <>
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerTransparent: false,
+          headerBackButtonDisplayMode: "generic",
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerShadowVisible: true,
+          header: () => <TeamHeader team={teamDetails} />,
+        }}
       />
       
-      <View style={styles.content}>
-        <TeamStats season={selectedSeason} />
-        
-        <QuickActions
-          onManageRoster={handleManageRoster}
-          onCreateGame={handleCreateGame}
-          onViewSchedule={handleViewSchedule}
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <SeasonSelector
+          seasons={availableSeasons}
+          selectedSeason={selectedSeasonYear}
+          onSeasonChange={setSelectedSeasonYear}
         />
         
-        <GamesList
-          games={selectedSeason.games}
-          teamName={teamDetails.name}
-          onGamePress={handleGamePress}
-        />
-      </View>
-    </ScrollView>
+        <View style={styles.content}>
+          <TeamStats season={selectedSeason} />
+          
+          <QuickActions
+            onManageRoster={handleManageRoster}
+            onCreateGame={handleCreateGame}
+            onViewSchedule={handleViewSchedule}
+          />
+          
+          <GamesList
+            games={selectedSeason.games}
+            teamName={teamDetails.name}
+            onGamePress={handleGamePress}
+          />
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
