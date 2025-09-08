@@ -66,6 +66,7 @@ const GamePage = () => {
 
   // Bottom sheet setup
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const flatListRef = useRef(null);
   const snapPoints = useMemo(() => ['70%', '90%'], []);
 
   // Mock roster data - in a real app this would come from your data source
@@ -348,6 +349,7 @@ const GamePage = () => {
           </View>
           
           <BottomSheetFlatList
+            ref={flatListRef}
             data={rosterPlayers}
             keyExtractor={(item) => item.id}
             renderItem={({ item: player }) => (
@@ -366,6 +368,8 @@ const GamePage = () => {
             )}
             contentContainerStyle={styles.playersListContent}
             showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+            keyboardShouldPersistTaps="handled"
           />
         </BottomSheet>
       </View>
@@ -632,7 +636,8 @@ const styles = StyleSheet.create({
   },
   playersList: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingBottom: 40,
+    flexGrow: 1,
   },
   playerItem: {
     flexDirection: 'row',
