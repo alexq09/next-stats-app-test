@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
-import { Users, Undo, ArrowLeftRight, X } from "lucide-react-native";
+import { Users, Undo, ArrowLeftRight } from "lucide-react-native";
 import Colors from "@/constants/Colors";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -123,12 +123,6 @@ const GamePage = () => {
     }
   };
 
-  const handleClosePlayerSelection = () => {
-    setShowPlayerSelection(false);
-    setPendingAction(null);
-    setSelectedPlayer(null);
-  };
-
   const undoLastAction = () => {
     if (actions.length === 0) return;
 
@@ -181,14 +175,6 @@ const GamePage = () => {
     </TouchableOpacity>
   );
 
-  // variables
-  const data = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
   const snapPoints = useMemo(() => ["70%"], []);
 
   // callbacks
@@ -414,6 +400,16 @@ const GamePage = () => {
             enableDynamicSizing={false}
             onChange={handleSheetChange}
             enablePanDownToClose={true}
+            handleComponent={() => (
+              <View style={styles.sheetHeader}>
+                <View style={styles.handleIndicator} />
+                <Text style={styles.sheetHeaderText}>
+                  {pendingAction
+                    ? `Select player for ${pendingAction.type}`
+                    : "Select player"}
+                </Text>
+              </View>
+            )}
           >
             <BottomSheetScrollView
               contentContainerStyle={styles.contentContainer}
@@ -428,26 +424,27 @@ const GamePage = () => {
 };
 
 const styles = StyleSheet.create({
-  playerCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+  handleIndicator: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#E5E7EB",
+    marginBottom: 8,
+  },
+  sheetHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#F3F4F6",
     backgroundColor: "white",
+    alignItems: "center", // center children horizontally
+    justifyContent: "center",
   },
-  sheetcontainer: {
-    flex: 1,
-    paddingTop: 200,
-  },
-  contentContainer: {
-    backgroundColor: "white",
-  },
-  itemContainer: {
-    padding: 6,
-    margin: 6,
-    backgroundColor: "#eee",
+  sheetHeaderText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.dark,
+    textAlign: "center",
   },
   container: {
     flex: 1,
@@ -461,27 +458,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: "#F8F9FA",
   },
-  teamBox: {
-    backgroundColor: "#F3F4F6",
-    borderRadius: 12,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+  opponentSection: {
     alignItems: "center",
     flex: 1,
     maxWidth: 120,
   },
-  teamAbbreviation: {
-    fontSize: 24,
+  opponentName: {
+    fontSize: 18,
     fontWeight: "bold",
     color: Colors.dark,
     textAlign: "center",
-  },
-  teamUnderline: {
-    width: 30,
-    height: 3,
-    backgroundColor: "#6B7280",
-    marginTop: 4,
-    borderRadius: 2,
+    flexWrap: "wrap",
   },
   scoreSection: {
     alignItems: "center",
@@ -502,18 +489,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 12,
     fontWeight: "bold",
-  },
-  opponentSection: {
-    alignItems: "center",
-    flex: 1,
-    maxWidth: 120,
-  },
-  opponentName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: Colors.dark,
-    textAlign: "center",
-    flexWrap: "wrap",
   },
   teamToggleContainer: {
     flexDirection: "row",
@@ -641,16 +616,16 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginBottom: 2,
   },
-  actionTeam: {
-    fontSize: 14,
-    color: Colors.grey,
-    fontStyle: "italic",
-  },
   actionPlayer: {
     fontSize: 14,
     color: Colors.primary,
     fontWeight: "500",
     marginBottom: 2,
+  },
+  actionTeam: {
+    fontSize: 14,
+    color: Colors.grey,
+    fontStyle: "italic",
   },
   actionTime: {
     fontSize: 14,
@@ -685,44 +660,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E5E7EB",
   },
-  bottomSheetOverlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  bottomSheetContent: {
-    backgroundColor: "#1F2937",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: "70%",
-    minHeight: "50%",
-  },
-  bottomSheetHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-  },
-  bottomSheetTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-    flex: 1,
-  },
-  closeButton: {
-    padding: 4,
-  },
-  playersList: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  playerItem: {
+  playerCard: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 16,
+    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#F3F4F6",
+    backgroundColor: "white",
   },
   playerNumber: {
     width: 50,
@@ -751,6 +696,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#9CA3AF",
     fontWeight: "500",
+  },
+  contentContainer: {
+    backgroundColor: "white",
   },
 });
 
