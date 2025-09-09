@@ -180,13 +180,6 @@ const GamePage = () => {
   );
 
   // variables
-  const data = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
   const snapPoints = useMemo(() => ["70%"], []);
 
   // callbacks
@@ -200,14 +193,20 @@ const GamePage = () => {
     sheetRef.current?.close();
   }, []);
 
-  // render
-  const renderItem = useCallback(
-    (item: any) => (
-      <View key={item} style={styles.itemContainer}>
-        <Text>{item}</Text>
+  const renderPlayerItem = ({ item }: { item: Player }) => (
+    <TouchableOpacity
+      style={styles.playerCard}
+      onPress={() => handlePlayerSelect(item)}
+      activeOpacity={0.7}
+    >
+      <View style={styles.playerNumber}>
+        <Text style={styles.playerNumberText}>#{item.number}</Text>
       </View>
-    ),
-    []
+      <View style={styles.playerInfo}>
+        <Text style={styles.playerName}>{item.name}</Text>
+        <Text style={styles.playerPosition}>{item.position}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -396,12 +395,44 @@ const GamePage = () => {
             enableDynamicSizing={false}
             onChange={handleSheetChange}
             enablePanDownToClose={true}
+            backgroundStyle={styles.bottomSheetBackground}
+            handleIndicatorStyle={styles.bottomSheetIndicator}
           >
-            <BottomSheetScrollView
-              contentContainerStyle={styles.contentContainer}
-            >
-              {data.map(renderItem)}
-            </BottomSheetScrollView>
+            <View style={styles.bottomSheetContent}>
+              <View style={styles.bottomSheetHeader}>
+                <Text style={styles.bottomSheetTitle}>
+                  Select Player for {pendingAction?.type}
+                </Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={handleClosePress}
+                >
+                  <X size={24} color={Colors.grey} />
+                </TouchableOpacity>
+              </View>
+              
+              <BottomSheetScrollView
+                contentContainerStyle={styles.playersListContainer}
+                showsVerticalScrollIndicator={false}
+              >
+                {rosterPlayers.map((player) => (
+                  <TouchableOpacity
+                    key={player.id}
+                    style={styles.playerCard}
+                    onPress={() => handlePlayerSelect(player)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.playerNumber}>
+                      <Text style={styles.playerNumberText}>#{player.number}</Text>
+                    </View>
+                    <View style={styles.playerInfo}>
+                      <Text style={styles.playerName}>{player.name}</Text>
+                      <Text style={styles.playerPosition}>{player.position}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </BottomSheetScrollView>
+            </View>
           </BottomSheet>
         </View>
       </GestureHandlerRootView>
@@ -410,18 +441,6 @@ const GamePage = () => {
 };
 
 const styles = StyleSheet.create({
-  sheetcontainer: {
-    flex: 1,
-    paddingTop: 200,
-  },
-  contentContainer: {
-    backgroundColor: "white",
-  },
-  itemContainer: {
-    padding: 6,
-    margin: 6,
-    backgroundColor: "#eee",
-  },
   container: {
     flex: 1,
     backgroundColor: "#F8F9FA",
@@ -652,44 +671,47 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E5E7EB",
   },
-  bottomSheetOverlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  bottomSheetContent: {
-    backgroundColor: "#1F2937",
+  bottomSheetBackground: {
+    backgroundColor: "white",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: "70%",
-    minHeight: "50%",
+  },
+  bottomSheetIndicator: {
+    backgroundColor: Colors.grey,
+    width: 40,
+  },
+  bottomSheetContent: {
+    flex: 1,
   },
   bottomSheetHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 20,
+    paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
   },
   bottomSheetTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "white",
+    color: Colors.dark,
     flex: 1,
   },
   closeButton: {
     padding: 4,
   },
-  playersList: {
-    flex: 1,
-    paddingHorizontal: 20,
+  playersListContainer: {
+    paddingBottom: 20,
   },
-  playerItem: {
+  playerCard: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 16,
+    paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#F3F4F6",
+    backgroundColor: "white",
   },
   playerNumber: {
     width: 50,
@@ -711,12 +733,12 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: 18,
     fontWeight: "600",
-    color: "white",
+    color: Colors.dark,
     marginBottom: 4,
   },
   playerPosition: {
     fontSize: 14,
-    color: "#9CA3AF",
+    color: Colors.grey,
     fontWeight: "500",
   },
 });
