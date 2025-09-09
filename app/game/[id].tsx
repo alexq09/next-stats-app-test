@@ -397,11 +397,39 @@ const GamePage = () => {
             onChange={handleSheetChange}
             enablePanDownToClose={true}
           >
-            <BottomSheetScrollView
-              contentContainerStyle={styles.contentContainer}
-            >
-              {data.map(renderItem)}
-            </BottomSheetScrollView>
+            <View style={styles.bottomSheetContent}>
+              <View style={styles.bottomSheetHeader}>
+                <Text style={styles.bottomSheetTitle}>
+                  Select Player for {pendingAction?.type}
+                </Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={handleClosePress}
+                >
+                  <X size={24} color={Colors.grey} />
+                </TouchableOpacity>
+              </View>
+              
+              <BottomSheetScrollView style={styles.playersList}>
+                {rosterPlayers.map((player) => (
+                  <TouchableOpacity
+                    key={player.id}
+                    style={styles.playerItem}
+                    onPress={() => handlePlayerSelect(player)}
+                  >
+                    <View style={styles.playerNumber}>
+                      <Text style={styles.playerNumberText}>
+                        {player.number}
+                      </Text>
+                    </View>
+                    <View style={styles.playerInfo}>
+                      <Text style={styles.playerName}>{player.name}</Text>
+                      <Text style={styles.playerPosition}>{player.position}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </BottomSheetScrollView>
+            </View>
           </BottomSheet>
         </View>
       </GestureHandlerRootView>
@@ -415,12 +443,67 @@ const styles = StyleSheet.create({
     paddingTop: 200,
   },
   contentContainer: {
+    flex: 1,
+  },
+  bottomSheetContent: {
+    flex: 1,
     backgroundColor: "white",
   },
-  itemContainer: {
-    padding: 6,
-    margin: 6,
-    backgroundColor: "#eee",
+  bottomSheetHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  bottomSheetTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: Colors.dark,
+    flex: 1,
+  },
+  closeButton: {
+    padding: 4,
+  },
+  playersList: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  playerItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F3F4F6",
+  },
+  playerNumber: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: Colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  playerNumberText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  playerInfo: {
+    flex: 1,
+  },
+  playerName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.dark,
+    marginBottom: 4,
+  },
+  playerPosition: {
+    fontSize: 14,
+    color: Colors.grey,
+    fontWeight: "500",
   },
   container: {
     flex: 1,
