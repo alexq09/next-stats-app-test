@@ -202,10 +202,21 @@ const GamePage = () => {
 
   // render
   const renderItem = useCallback(
-    (item: any) => (
-      <View key={item} style={styles.itemContainer}>
-        <Text>{item}</Text>
-      </View>
+    (player: Player) => (
+      <TouchableOpacity
+        key={player.id}
+        style={styles.playerCard}
+        // onPress={() => handlePlayerSelect(player)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.playerNumber}>
+          <Text style={styles.playerNumberText}>#{player.number}</Text>
+        </View>
+        <View style={styles.playerInfo}>
+          <Text style={styles.playerName}>{player.name}</Text>
+          <Text style={styles.playerPosition}>{player.position}</Text>
+        </View>
+      </TouchableOpacity>
     ),
     []
   );
@@ -400,7 +411,7 @@ const GamePage = () => {
             <BottomSheetScrollView
               contentContainerStyle={styles.contentContainer}
             >
-              {data.map(renderItem)}
+              {rosterPlayers.map(renderItem)}
             </BottomSheetScrollView>
           </BottomSheet>
         </View>
@@ -410,6 +421,15 @@ const GamePage = () => {
 };
 
 const styles = StyleSheet.create({
+  playerCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F3F4F6",
+    backgroundColor: "white",
+  },
   sheetcontainer: {
     flex: 1,
     paddingTop: 200,
@@ -711,7 +731,7 @@ const styles = StyleSheet.create({
   playerName: {
     fontSize: 18,
     fontWeight: "600",
-    color: "white",
+    color: Colors.dark,
     marginBottom: 4,
   },
   playerPosition: {
