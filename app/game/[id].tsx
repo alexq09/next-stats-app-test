@@ -18,6 +18,7 @@ interface GameAction {
   timestamp: string;
   points?: number;
   team: "home" | "away";
+  player?: Player;
 }
 
 interface Player {
@@ -86,6 +87,7 @@ const GamePage = () => {
       }),
       points,
       team: selectedTeam,
+      player,
     };
 
     setActions((prev) => [newAction, ...prev]);
@@ -206,7 +208,7 @@ const GamePage = () => {
       <TouchableOpacity
         key={player.id}
         style={styles.playerCard}
-        // onPress={() => handlePlayerSelect(player)}
+        onPress={() => handlePlayerSelect(player)}
         activeOpacity={0.7}
       >
         <View style={styles.playerNumber}>
@@ -218,7 +220,7 @@ const GamePage = () => {
         </View>
       </TouchableOpacity>
     ),
-    []
+    [handlePlayerSelect]
   );
 
   return (
@@ -318,6 +320,11 @@ const GamePage = () => {
                     <View key={action.id} style={styles.actionItem}>
                       <View style={styles.actionLeft}>
                         <Text style={styles.actionText}>{action.type}</Text>
+                        {action.player && (
+                          <Text style={styles.actionPlayer}>
+                            #{action.player.number} {action.player.name}
+                          </Text>
+                        )}
                         <Text style={styles.actionTeam}>
                           {action.team === "home"
                             ? currentTeamName
@@ -638,6 +645,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.grey,
     fontStyle: "italic",
+  },
+  actionPlayer: {
+    fontSize: 14,
+    color: Colors.primary,
+    fontWeight: "500",
+    marginBottom: 2,
   },
   actionTime: {
     fontSize: 14,
