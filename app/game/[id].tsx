@@ -102,13 +102,13 @@ const GamePage = () => {
   };
 
   const handleStatAction = (actionType: string, points: number = 0) => {
-    // Only show player selection for home team stat actions (non-scoring)
-    if (selectedTeam === "home" && points === 0) {
+    // Show player selection for all home team stat actions (including scoring)
+    if (selectedTeam === "home") {
       setPendingAction({ type: actionType, points });
       setShowPlayerSelection(true);
       handleSnapPress(0);
     } else {
-      // For away team or scoring actions, add directly
+      // For away team actions, add directly without player selection
       addAction(actionType, points);
     }
   };
