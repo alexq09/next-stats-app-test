@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Users, Plus, Calendar, BarChart3 } from 'lucide-react-native';
+import { Users, Plus, Calendar, ChartBar as BarChart3 } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
 
 interface QuickActionsProps {

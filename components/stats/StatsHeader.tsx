@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { BarChart3 } from 'lucide-react-native';
+import { ChartBar as BarChart3 } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
 
 interface StatsHeaderProps {
