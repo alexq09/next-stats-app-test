@@ -183,7 +183,7 @@ const AddPlayerModal: React.FC<AddPlayerModalProps> = ({
                     style={styles.textInput}
                     value={formData.height}
                     onChangeText={(text) => setFormData(prev => ({ ...prev, height: text }))}
-                    placeholder="6'2\""
+                    placeholder="6'2\"
                     placeholderTextColor={Colors.grey}
                   />
                 </View>
