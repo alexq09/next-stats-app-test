@@ -8,6 +8,8 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { X, Plus } from "lucide-react-native";
@@ -86,16 +88,23 @@ const RosterPage = () => {
           onAddPlayer={() => setShowAddPlayerModal(true)}
         />
 
-        <ScrollView 
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
+        <KeyboardAvoidingView 
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
         >
-          <PlayersList
-            players={players}
-            onEditPlayer={handleUpdatePlayer}
-            onDeletePlayer={handleDeletePlayer}
-          />
-        </ScrollView>
+          <ScrollView 
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            <PlayersList
+              players={players}
+              onEditPlayer={handleUpdatePlayer}
+              onDeletePlayer={handleDeletePlayer}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
 
         <AddPlayerModal
           visible={showAddPlayerModal}
@@ -111,6 +120,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F9FA",
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   scrollView: {
     flex: 1,
