@@ -118,6 +118,14 @@ function RootLayoutNav() {
           headerBackButtonDisplayMode: "generic",
         }}
       />
+      <Stack.Screen
+        name="team-settings/[teamId]"
+        options={{
+          headerTitle: "Team Settings",
+          headerTransparent: false,
+          headerBackButtonDisplayMode: "generic",
+        }}
+      />
     </Stack>
   );
 }

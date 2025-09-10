@@ -3,6 +3,7 @@ import { View, ScrollView, StyleSheet, Alert, Text, Modal, TextInput, TouchableO
 import { useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { useRouter } from "expo-router";
+import { Settings } from "lucide-react-native";
 import { useTeamDetails } from "@/hooks/useTeamDetails";
 import SeasonSelector from "@/components/team/SeasonSelector";
 import TeamStats from "@/components/team/TeamStats";
@@ -70,6 +71,10 @@ const TeamPage = () => {
     Alert.alert("Game Details", `View details for game vs ${game.opponent}`);
   };
 
+  const handleTeamSettings = () => {
+    router.push(`/team-settings/${encodeURIComponent(teamName)}`);
+  };
+
   if (!teamDetails || !selectedSeason) {
     return (
       <View style={styles.container}>
@@ -93,6 +98,14 @@ const TeamPage = () => {
                 {teamDetails.organization}
               </Text>
             </View>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 16, padding: 4 }}
+              onPress={handleTeamSettings}
+            >
+              <Settings size={24} color={Colors.dark} />
+            </TouchableOpacity>
           ),
           headerTransparent: false,
           headerBackButtonDisplayMode: "generic",
