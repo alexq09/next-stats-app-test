@@ -62,6 +62,10 @@ const TeamPage = () => {
     Alert.alert("View Schedule", "Navigate to full schedule screen");
   };
 
+  const handleViewStats = () => {
+    router.push(`/stats/${encodeURIComponent(teamName)}`);
+  };
+
   const handleGamePress = (game: Game) => {
     Alert.alert("Game Details", `View details for game vs ${game.opponent}`);
   };
@@ -113,6 +117,7 @@ const TeamPage = () => {
             onManageRoster={handleManageRoster}
             onCreateGame={handleCreateGame}
             onViewSchedule={handleViewSchedule}
+            onViewStats={handleViewStats}
           />
 
           <GamesList

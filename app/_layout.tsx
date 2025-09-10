@@ -110,6 +110,14 @@ function RootLayoutNav() {
           headerBackButtonDisplayMode: "generic",
         }}
       />
+      <Stack.Screen
+        name="stats/[teamId]"
+        options={{
+          headerTitle: "Season Statistics",
+          headerTransparent: false,
+          headerBackButtonDisplayMode: "generic",
+        }}
+      />
     </Stack>
   );
 }

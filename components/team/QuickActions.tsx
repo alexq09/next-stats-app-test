@@ -1,18 +1,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Users, Plus, Calendar } from 'lucide-react-native';
+import { Users, Plus, Calendar, BarChart3 } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
 
 interface QuickActionsProps {
   onManageRoster: () => void;
   onCreateGame: () => void;
   onViewSchedule: () => void;
+  onViewStats: () => void;
 }
 
 const QuickActions: React.FC<QuickActionsProps> = ({
   onManageRoster,
   onCreateGame,
   onViewSchedule,
+  onViewStats,
 }) => {
   return (
     <View style={styles.container}>
@@ -39,6 +41,13 @@ const QuickActions: React.FC<QuickActionsProps> = ({
           </View>
           <Text style={styles.actionText}>View Schedule</Text>
         </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.actionButton} onPress={onViewStats}>
+          <View style={[styles.iconContainer, { backgroundColor: '#EF4444' }]}>
+            <BarChart3 size={24} color="white" />
+          </View>
+          <Text style={styles.actionText}>Season Stats</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -59,12 +68,13 @@ const styles = StyleSheet.create({
   },
   actionsGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   actionButton: {
-    flex: 1,
+    width: '48%',
     alignItems: 'center',
-    marginHorizontal: 4,
+    marginBottom: 16,
   },
   iconContainer: {
     width: 56,
