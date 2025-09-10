@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { MoreVertical, Mail, Phone } from 'lucide-react-native';
+import { MoveVertical as MoreVertical, Mail, Phone } from 'lucide-react-native';
 import { Player } from '@/assets/interfaces/roster';
 import Colors from '@/constants/Colors';
 
