@@ -31,14 +31,12 @@ const RosterPage = () => {
   };
 
   const handleEditPlayer = (player: Player) => {
-    Alert.alert(
-      "Edit Player",
-      `Edit ${player.name}`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Edit", onPress: () => console.log("Edit player:", player.id) }
-      ]
-    );
+    // This is now handled by the PlayerCard component itself
+    console.log("Edit player:", player.id);
+  };
+
+  const handleUpdatePlayer = (playerId: string, updates: { name: string; number: string }) => {
+    updatePlayer(playerId, updates);
   };
 
   const handleDeletePlayer = (playerId: string) => {
@@ -94,7 +92,7 @@ const RosterPage = () => {
         >
           <PlayersList
             players={players}
-            onEditPlayer={handleEditPlayer}
+            onEditPlayer={handleUpdatePlayer}
             onDeletePlayer={handleDeletePlayer}
           />
         </ScrollView>

@@ -6,7 +6,7 @@ import Colors from '@/constants/Colors';
 
 interface PlayersListProps {
   players: Player[];
-  onEditPlayer: (player: Player) => void;
+  onEditPlayer: (playerId: string, updates: { name: string; number: string }) => void;
   onDeletePlayer: (playerId: string) => void;
 }
 
@@ -29,7 +29,7 @@ const PlayersList: React.FC<PlayersListProps> = ({
   const renderPlayer = ({ item }: { item: Player }) => (
     <PlayerCard
       player={item}
-      onEdit={() => onEditPlayer(item)}
+      onEdit={onEditPlayer}
       onDelete={() => onDeletePlayer(item.id)}
     />
   );
