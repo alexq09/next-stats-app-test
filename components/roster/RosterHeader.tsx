@@ -5,10 +5,9 @@ import Colors from '@/constants/Colors';
 
 interface RosterHeaderProps {
   playerCount: number;
-  onAddPlayer: () => void;
 }
 
-const RosterHeader: React.FC<RosterHeaderProps> = ({ playerCount, onAddPlayer }) => {
+const RosterHeader: React.FC<RosterHeaderProps> = ({ playerCount }) => {
   return (
     <View style={styles.container}>
       <View style={styles.statsContainer}>
@@ -20,11 +19,6 @@ const RosterHeader: React.FC<RosterHeaderProps> = ({ playerCount, onAddPlayer })
           </View>
         </View>
       </View>
-
-      <TouchableOpacity style={styles.addButton} onPress={onAddPlayer}>
-        <Plus size={20} color="white" />
-        <Text style={styles.addButtonText}>Add Player</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -58,20 +52,6 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 14,
     color: Colors.grey,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    gap: 8,
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
 

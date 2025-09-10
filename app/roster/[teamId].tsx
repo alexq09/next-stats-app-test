@@ -17,19 +17,16 @@ import Colors from "@/constants/Colors";
 import { useRosterData } from "@/hooks/useRosterData";
 import RosterHeader from "@/components/roster/RosterHeader";
 import PlayersList from "@/components/roster/PlayersList";
-import AddPlayerModal from "@/components/roster/AddPlayerModal";
 import { Player } from "@/assets/interfaces/roster";
 
 const RosterPage = () => {
   const { teamId } = useLocalSearchParams<{ teamId: string }>();
   const teamName = Array.isArray(teamId) ? teamId[0] : teamId || "";
   
-  const [showAddPlayerModal, setShowAddPlayerModal] = useState(false);
   const { players, addPlayer, removePlayer, updatePlayer } = useRosterData(teamName);
 
   const handleAddPlayer = (playerData: Omit<Player, 'id'>) => {
     addPlayer(playerData);
-    setShowAddPlayerModal(false);
   };
 
   const handleEditPlayer = (player: Player) => {
@@ -85,7 +82,6 @@ const RosterPage = () => {
       <View style={styles.container}>
         <RosterHeader 
           playerCount={players.length}
-          onAddPlayer={() => setShowAddPlayerModal(true)}
         />
 
         <KeyboardAvoidingView 
@@ -102,15 +98,10 @@ const RosterPage = () => {
               players={players}
               onEditPlayer={handleUpdatePlayer}
               onDeletePlayer={handleDeletePlayer}
+              onAddPlayer={handleAddPlayer}
             />
           </ScrollView>
         </KeyboardAvoidingView>
-
-        <AddPlayerModal
-          visible={showAddPlayerModal}
-          onClose={() => setShowAddPlayerModal(false)}
-          onSubmit={handleAddPlayer}
-        />
       </View>
     </>
   );

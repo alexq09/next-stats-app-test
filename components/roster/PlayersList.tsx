@@ -2,29 +2,22 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { Player } from '@/assets/interfaces/roster';
 import PlayerCard from './PlayerCard';
+import AddPlayerCard from './AddPlayerCard';
 import Colors from '@/constants/Colors';
 
 interface PlayersListProps {
   players: Player[];
   onEditPlayer: (playerId: string, updates: { name: string; number: string }) => void;
   onDeletePlayer: (playerId: string) => void;
+  onAddPlayer: (player: Omit<Player, 'id'>) => void;
 }
 
 const PlayersList: React.FC<PlayersListProps> = ({ 
   players, 
   onEditPlayer, 
-  onDeletePlayer 
+  onDeletePlayer,
+  onAddPlayer
 }) => {
-  if (players.length === 0) {
-    return (
-      <View style={styles.emptyState}>
-        <Text style={styles.emptyTitle}>No Players Added</Text>
-        <Text style={styles.emptyText}>
-          Start building your roster by adding players to your team.
-        </Text>
-      </View>
-    );
-  }
 
   const renderPlayer = ({ item }: { item: Player }) => (
     <PlayerCard
@@ -37,14 +30,25 @@ const PlayersList: React.FC<PlayersListProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Players ({players.length})</Text>
-      <FlatList
-        data={players}
-        renderItem={renderPlayer}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={false}
-        contentContainerStyle={styles.listContent}
-      />
+      
+      <AddPlayerCard onAddPlayer={onAddPlayer} />
+      
+      {players.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyText}>
+            No players added yet. Use the card above to add your first player.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={players}
+          renderItem={renderPlayer}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+          contentContainerStyle={styles.listContent}
+        />
+      )}
     </View>
   );
 };
@@ -67,17 +71,9 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   emptyState: {
-    backgroundColor: 'white',
-    marginTop: 12,
-    paddingVertical: 60,
+    paddingVertical: 40,
     paddingHorizontal: 20,
     alignItems: 'center',
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.dark,
-    marginBottom: 8,
   },
   emptyText: {
     fontSize: 16,
