@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { MoveVertical as MoreVertical } from 'lucide-react-native';
+import { MoveVertical as MoreVertical, Trash2 } from 'lucide-react-native';
 import { Player } from '@/assets/interfaces/roster';
 import Colors from '@/constants/Colors';
 
@@ -24,9 +24,15 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onEdit, onDelete }) => 
           </View>
         </View>
         
-        <TouchableOpacity style={styles.menuButton} onPress={onEdit}>
-          <MoreVertical size={20} color={Colors.grey} />
-        </TouchableOpacity>
+        <View style={styles.actionButtons}>
+          <TouchableOpacity style={styles.actionButton} onPress={onEdit}>
+            <MoreVertical size={20} color={Colors.grey} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+            <Trash2 size={18} color="#EF4444" />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -81,8 +87,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.dark,
   },
-  menuButton: {
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  actionButton: {
     padding: 4,
+  },
+  deleteButton: {
+    padding: 6,
+    borderRadius: 8,
+    backgroundColor: '#FEF2F2',
   },
 });
 
