@@ -102,6 +102,14 @@ function RootLayoutNav() {
           headerBackButtonDisplayMode: "generic",
         }}
       />
+      <Stack.Screen
+        name="roster/[teamId]"
+        options={{
+          headerTitle: "Roster",
+          headerTransparent: false,
+          headerBackButtonDisplayMode: "generic",
+        }}
+      />
     </Stack>
   );
 }

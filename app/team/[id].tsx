@@ -29,7 +29,7 @@ const TeamPage = () => {
   } = useTeamDetails(teamName);
 
   const handleManageRoster = () => {
-    Alert.alert("Manage Roster", "Navigate to roster management screen");
+    router.push(`/roster/${encodeURIComponent(teamName)}`);
   };
 
   const handleCreateGame = () => {
