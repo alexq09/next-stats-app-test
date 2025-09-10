@@ -97,63 +97,77 @@ const StatsTable: React.FC<StatsTableProps> = ({ players, teamTotals, showTotals
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={styles.table}>
-          {/* Header Row */}
-          <View style={styles.headerRow}>
-            <View style={[styles.playerCell, styles.headerCell]}>
-              <Text style={styles.headerText}>Player</Text>
-            </View>
-            {statCategories.map((category) => (
-              <View 
-                key={category.key} 
-                style={[styles.statCell, styles.headerCell, { width: category.width }]}
-              >
-                <Text style={styles.headerText}>{category.shortLabel}</Text>
-              </View>
-            ))}
+      <View style={styles.tableContainer}>
+        {/* Static First Column */}
+        <View style={styles.staticColumn}>
+          {/* Static Header */}
+          <View style={[styles.staticHeaderCell, styles.headerCell]}>
+            <Text style={styles.headerText}>Player</Text>
           </View>
-
-          {/* Player Rows */}
+          
+          {/* Static Player Names */}
           {players.map((player) => (
-            <View key={player.playerId} style={styles.playerRow}>
-              <View style={styles.playerCell}>
-                <Text style={styles.playerNumber}>#{player.playerNumber}</Text>
-                <Text style={styles.playerName}>{player.playerName}</Text>
-              </View>
+            <View key={player.playerId} style={styles.staticPlayerCell}>
+              <Text style={styles.playerNumber}>#{player.playerNumber}</Text>
+              <Text style={styles.playerName}>{player.playerName}</Text>
+            </View>
+          ))}
+          
+          {/* Static Team Totals */}
+          <View style={[styles.staticPlayerCell, styles.totalsCell]}>
+            <Text style={styles.totalsText}>
+              {showTotals ? 'TEAM TOTALS' : 'TEAM AVERAGES'}
+            </Text>
+          </View>
+        </View>
+
+        {/* Scrollable Stats Columns */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollableStats}>
+          <View style={styles.statsTable}>
+            {/* Stats Header Row */}
+            <View style={styles.statsHeaderRow}>
               {statCategories.map((category) => (
                 <View 
                   key={category.key} 
-                  style={[styles.statCell, { width: category.width }]}
+                  style={[styles.statCell, styles.headerCell, { width: category.width }]}
                 >
-                  <Text style={styles.statText}>
-                    {formatStatValue(player[category.key] as number, category.format)}
+                  <Text style={styles.headerText}>{category.shortLabel}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Stats Player Rows */}
+            {players.map((player) => (
+              <View key={player.playerId} style={styles.statsPlayerRow}>
+                {statCategories.map((category) => (
+                  <View 
+                    key={category.key} 
+                    style={[styles.statCell, { width: category.width }]}
+                  >
+                    <Text style={styles.statText}>
+                      {formatStatValue(player[category.key] as number, category.format)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ))}
+
+            {/* Stats Team Totals Row */}
+            <View style={[styles.statsPlayerRow, styles.totalsRow]}>
+              {statCategories.map((category) => (
+                <View 
+                  key={category.key} 
+                  style={[styles.statCell, styles.totalsCell, { width: category.width }]}
+                >
+                  <Text style={styles.totalsStatText}>
+                    {formatStatValue(teamTotals[category.key] as number, category.format)}
                   </Text>
                 </View>
               ))}
             </View>
-          ))}
-
-          {/* Team Totals Row */}
-          <View style={[styles.playerRow, styles.totalsRow]}>
-            <View style={[styles.playerCell, styles.totalsCell]}>
-              <Text style={styles.totalsText}>
-                {showTotals ? 'TEAM TOTALS' : 'TEAM AVERAGES'}
-              </Text>
-            </View>
-            {statCategories.map((category) => (
-              <View 
-                key={category.key} 
-                style={[styles.statCell, styles.totalsCell, { width: category.width }]}
-              >
-                <Text style={styles.totalsStatText}>
-                  {formatStatValue(teamTotals[category.key] as number, category.format)}
-                </Text>
-              </View>
-            ))}
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -201,16 +215,46 @@ const styles = StyleSheet.create({
   activeToggleButtonText: {
     color: 'white',
   },
-  table: {
+  tableContainer: {
+    flexDirection: 'row',
+  },
+  staticColumn: {
+    backgroundColor: 'white',
+    borderRightWidth: 2,
+    borderRightColor: '#E5E7EB',
+    zIndex: 1,
+  },
+  staticHeaderCell: {
+    width: 140,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    backgroundColor: '#F8F9FA',
+    borderBottomWidth: 2,
+    borderBottomColor: '#E5E7EB',
+  },
+  staticPlayerCell: {
+    width: 140,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+    backgroundColor: 'white',
+  },
+  scrollableStats: {
+    flex: 1,
+  },
+  statsTable: {
     minWidth: '100%',
   },
-  headerRow: {
+  statsHeaderRow: {
     flexDirection: 'row',
     backgroundColor: '#F8F9FA',
     borderBottomWidth: 2,
     borderBottomColor: '#E5E7EB',
   },
-  playerRow: {
+  statsPlayerRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
@@ -218,12 +262,6 @@ const styles = StyleSheet.create({
   totalsRow: {
     backgroundColor: '#F8F9FA',
     borderTopWidth: 2,
-    borderTopColor: '#E5E7EB',
-  },
-  playerCell: {
-    width: 140,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
     justifyContent: 'center',
   },
   statCell: {
@@ -271,8 +309,6 @@ const styles = StyleSheet.create({
     color: Colors.dark,
     textAlign: 'center',
   },
-});
-
 export default StatsTable;
 
 export default StatsTable
