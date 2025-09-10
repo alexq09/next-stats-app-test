@@ -274,3 +274,5 @@ const styles = StyleSheet.create({
 });
 
 export default StatsTable;
+
+export default StatsTable
