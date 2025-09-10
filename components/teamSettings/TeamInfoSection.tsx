@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { Edit3, Save, X, Trash2 } from 'lucide-react-native';
+import { CreditCard as Edit3, Save, X, Trash2 } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
 import { OrganizationOption } from '@/assets/interfaces/teamSettings';
 import OrganizationPicker from './OrganizationPicker';
