@@ -309,6 +309,6 @@ const styles = StyleSheet.create({
     color: Colors.dark,
     textAlign: 'center',
   },
-export default StatsTable;
+});
 
-export default StatsTable
+export default StatsTable;
