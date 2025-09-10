@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
 import { useLocalSearchParams, Stack } from "expo-router";
 import Colors from "@/constants/Colors";
@@ -10,8 +11,13 @@ import StatsTable from "@/components/stats/StatsTable";
 const StatsPage = () => {
   const { teamId } = useLocalSearchParams<{ teamId: string }>();
   const teamName = Array.isArray(teamId) ? teamId[0] : teamId || "";
+  const [showTotals, setShowTotals] = useState(true);
   
   const { seasonStats } = useSeasonStats(teamName);
+
+  const handleToggleView = () => {
+    setShowTotals(!showTotals);
+  };
 
   return (
     <>
@@ -52,6 +58,8 @@ const StatsPage = () => {
           <StatsTable 
             players={seasonStats.players}
             teamTotals={seasonStats.teamTotals}
+            showTotals={showTotals}
+            onToggleView={handleToggleView}
           />
         </ScrollView>
       </View>

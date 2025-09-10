@@ -1,26 +1,45 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { PlayerStats, StatCategory } from '@/assets/interfaces/stats';
 import Colors from '@/constants/Colors';
 
 interface StatsTableProps {
   players: PlayerStats[];
   teamTotals: Omit<PlayerStats, 'playerId' | 'playerName' | 'playerNumber'>;
+  showTotals: boolean;
+  onToggleView: () => void;
 }
 
-const statCategories: StatCategory[] = [
+const totalStatCategories: StatCategory[] = [
+  { key: 'gamesPlayed', label: 'Games Played', shortLabel: 'GP', format: 'number', width: 50 },
+  { key: 'points', label: 'Total Points', shortLabel: 'PTS', format: 'number', width: 50 },
+  { key: 'rebounds', label: 'Total Rebounds', shortLabel: 'REB', format: 'number', width: 50 },
+  { key: 'assists', label: 'Total Assists', shortLabel: 'AST', format: 'number', width: 50 },
+  { key: 'blocks', label: 'Blocks', shortLabel: 'BLK', format: 'number', width: 50 },
+  { key: 'turnovers', label: 'Turnovers', shortLabel: 'TO', format: 'number', width: 45 },
+  { key: 'fouls', label: 'Fouls', shortLabel: 'PF', format: 'number', width: 45 },
+  { key: 'fieldGoalsMade', label: 'Field Goals Made', shortLabel: 'FGM', format: 'number', width: 50 },
+  { key: 'fieldGoalsAttempted', label: 'Field Goals Attempted', shortLabel: 'FGA', format: 'number', width: 50 },
+  { key: 'fieldGoalPercentage', label: 'Field Goal %', shortLabel: 'FG%', format: 'percentage', width: 55 },
+  { key: 'threePointersMade', label: '3-Pointers Made', shortLabel: '3PM', format: 'number', width: 50 },
+  { key: 'threePointersAttempted', label: '3-Pointers Attempted', shortLabel: '3PA', format: 'number', width: 50 },
+  { key: 'threePointPercentage', label: '3-Point %', shortLabel: '3P%', format: 'percentage', width: 55 },
+  { key: 'freeThrowsMade', label: 'Free Throws Made', shortLabel: 'FTM', format: 'number', width: 50 },
+  { key: 'freeThrowsAttempted', label: 'Free Throws Attempted', shortLabel: 'FTA', format: 'number', width: 50 },
+  { key: 'freeThrowPercentage', label: 'Free Throw %', shortLabel: 'FT%', format: 'percentage', width: 55 },
+];
+
+const averageStatCategories: StatCategory[] = [
   { key: 'gamesPlayed', label: 'Games Played', shortLabel: 'GP', format: 'number', width: 50 },
   { key: 'pointsPerGame', label: 'Points Per Game', shortLabel: 'PPG', format: 'decimal', width: 55 },
-  { key: 'points', label: 'Total Points', shortLabel: 'PTS', format: 'number', width: 50 },
   { key: 'reboundsPerGame', label: 'Rebounds Per Game', shortLabel: 'RPG', format: 'decimal', width: 55 },
-  { key: 'rebounds', label: 'Total Rebounds', shortLabel: 'REB', format: 'number', width: 50 },
   { key: 'assistsPerGame', label: 'Assists Per Game', shortLabel: 'APG', format: 'decimal', width: 55 },
-  { key: 'assists', label: 'Total Assists', shortLabel: 'AST', format: 'number', width: 50 },
   { key: 'blocks', label: 'Blocks', shortLabel: 'BLK', format: 'number', width: 50 },
   { key: 'turnovers', label: 'Turnovers', shortLabel: 'TO', format: 'number', width: 45 },
   { key: 'fouls', label: 'Fouls', shortLabel: 'PF', format: 'number', width: 45 },
   { key: 'fieldGoalPercentage', label: 'Field Goal %', shortLabel: 'FG%', format: 'percentage', width: 55 },
   { key: 'threePointPercentage', label: '3-Point %', shortLabel: '3P%', format: 'percentage', width: 55 },
+  { key: 'freeThrowPercentage', label: 'Free Throw %', shortLabel: 'FT%', format: 'percentage', width: 55 },
 ];
 
 const formatStatValue = (value: number, format: StatCategory['format']): string => {
@@ -35,9 +54,49 @@ const formatStatValue = (value: number, format: StatCategory['format']): string 
   }
 };
 
-const StatsTable: React.FC<StatsTableProps> = ({ players, teamTotals }) => {
+const StatsTable: React.FC<StatsTableProps> = ({ players, teamTotals, showTotals, onToggleView }) => {
+  const statCategories = showTotals ? totalStatCategories : averageStatCategories;
+
   return (
     <View style={styles.container}>
+      <View style={styles.toggleContainer}>
+        <Text style={styles.toggleLabel}>View:</Text>
+        <View style={styles.toggleButtons}>
+          <TouchableOpacity
+            style={[
+              styles.toggleButton,
+              showTotals && styles.activeToggleButton,
+            ]}
+            onPress={onToggleView}
+          >
+            <Text
+              style={[
+                styles.toggleButtonText,
+                showTotals && styles.activeToggleButtonText,
+              ]}
+            >
+              Totals
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.toggleButton,
+              !showTotals && styles.activeToggleButton,
+            ]}
+            onPress={onToggleView}
+          >
+            <Text
+              style={[
+                styles.toggleButtonText,
+                !showTotals && styles.activeToggleButtonText,
+              ]}
+            >
+              Averages
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.table}>
           {/* Header Row */}
@@ -78,7 +137,9 @@ const StatsTable: React.FC<StatsTableProps> = ({ players, teamTotals }) => {
           {/* Team Totals Row */}
           <View style={[styles.playerRow, styles.totalsRow]}>
             <View style={[styles.playerCell, styles.totalsCell]}>
-              <Text style={styles.totalsText}>TEAM TOTALS</Text>
+              <Text style={styles.totalsText}>
+                {showTotals ? 'TEAM TOTALS' : 'TEAM AVERAGES'}
+              </Text>
             </View>
             {statCategories.map((category) => (
               <View 
@@ -101,6 +162,44 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     marginTop: 12,
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  toggleLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.dark,
+  },
+  toggleButtons: {
+    flexDirection: 'row',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    padding: 2,
+  },
+  toggleButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  activeToggleButton: {
+    backgroundColor: Colors.primary,
+  },
+  toggleButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.grey,
+  },
+  activeToggleButtonText: {
+    color: 'white',
   },
   table: {
     minWidth: '100%',
