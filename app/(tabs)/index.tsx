@@ -52,7 +52,7 @@ const Page = () => {
       </View>
 
       <TeamList teams={filteredTeams} onTeamPress={handleTeamPress} />
-      
+
       <FloatingActionButton
         onAddTeam={handleAddTeam}
         onAddOrganization={handleAddOrganization}
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 8,
     paddingBottom: 16,
     backgroundColor: "#F8F9FA",
   },

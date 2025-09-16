@@ -1,5 +1,6 @@
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import Colors from "@/constants/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const HomeHeader = () => {
   return (
@@ -13,17 +14,16 @@ const HomeHeader = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F8F9FA',
+    backgroundColor: "#F8F9FA",
   },
   headerContent: {
-    paddingVertical: 16,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.dark,
-    textAlign: 'left',
+    textAlign: "left",
   },
 });
 

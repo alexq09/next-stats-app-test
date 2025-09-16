@@ -1,5 +1,14 @@
 import React from "react";
-import { View, ScrollView, StyleSheet, Alert, Text, Modal, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Alert,
+  Text,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { useState } from "react";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { useRouter } from "expo-router";
@@ -17,7 +26,7 @@ const TeamPage = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const teamName = Array.isArray(id) ? id[0] : id || "";
   const router = useRouter();
-  
+
   const [showCreateGameModal, setShowCreateGameModal] = useState(false);
   const [opponentName, setOpponentName] = useState("");
 
@@ -42,16 +51,20 @@ const TeamPage = () => {
       Alert.alert("Error", "Please enter an opponent name");
       return;
     }
-    
+
     // Generate a temporary game ID
     const gameId = `game-${Date.now()}`;
-    
+
     // Close modal and reset form
     setShowCreateGameModal(false);
     setOpponentName("");
-    
+
     // Navigate to game page
-    router.push(`/game/${gameId}?opponent=${encodeURIComponent(opponentName.trim())}&team=${encodeURIComponent(teamName)}`);
+    router.push(
+      `/game/${gameId}?opponent=${encodeURIComponent(
+        opponentName.trim()
+      )}&team=${encodeURIComponent(teamName)}`
+    );
   };
 
   const handleCloseModal = () => {
@@ -101,7 +114,7 @@ const TeamPage = () => {
           ),
           headerRight: () => (
             <TouchableOpacity
-              style={{ marginRight: 16, padding: 4 }}
+              style={{ padding: 4 }}
               onPress={handleTeamSettings}
             >
               <Settings size={24} color={Colors.dark} />
@@ -159,7 +172,7 @@ const TeamPage = () => {
                 <X size={24} color={Colors.grey} />
               </TouchableOpacity>
             </View>
-            
+
             <View style={styles.modalBody}>
               <Text style={styles.inputLabel}>Opponent Name</Text>
               <TextInput
@@ -173,7 +186,7 @@ const TeamPage = () => {
                 onSubmitEditing={handleSubmitGame}
               />
             </View>
-            
+
             <View style={styles.modalFooter}>
               <TouchableOpacity
                 style={styles.cancelButton}
@@ -181,7 +194,7 @@ const TeamPage = () => {
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 style={styles.submitButton}
                 onPress={handleSubmitGame}
@@ -206,17 +219,17 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 16,
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -226,16 +239,16 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: "#E5E7EB",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.dark,
   },
   closeButton: {
@@ -246,26 +259,26 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.dark,
     marginBottom: 8,
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: "#E5E7EB",
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
     color: Colors.dark,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: "#F9FAFB",
   },
   modalFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: "#E5E7EB",
     gap: 12,
   },
   cancelButton: {
@@ -274,12 +287,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    alignItems: 'center',
+    borderColor: "#E5E7EB",
+    alignItems: "center",
   },
   cancelButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.grey,
   },
   submitButton: {
@@ -288,12 +301,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 12,
     backgroundColor: Colors.primary,
-    alignItems: 'center',
+    alignItems: "center",
   },
   submitButtonText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: 'white',
+    fontWeight: "600",
+    color: "white",
   },
 });
 
