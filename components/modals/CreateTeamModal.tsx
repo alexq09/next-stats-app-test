@@ -49,7 +49,6 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
     if (isSubmitting) return;
     setTeamName('');
     setSelectedOrganization('');
-    setShowOrganizationDropdown(false);
     onClose();
   };
   const handleSubmit = async () => {
