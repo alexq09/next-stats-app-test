@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { X, Users, Check, ChevronDown } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
@@ -28,6 +29,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   const [selectedOrganization, setSelectedOrganization] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOrganizationDropdown, setShowOrganizationDropdown] = useState(false);
 
   // Mock organizations - in production this would come from your API
   const organizations = [
@@ -48,9 +50,14 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
     setTeamName('');
     setSelectedOrganization('');
     setSelectedYear(currentYear.toString());
+    setShowOrganizationDropdown(false);
     onClose();
   };
 
+  const handleSelectOrganization = (organization: string) => {
+    setSelectedOrganization(organization);
+    setShowOrganizationDropdown(false);
+  };
   const handleSubmit = async () => {
     const trimmedName = teamName.trim();
     
@@ -85,6 +92,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
       setTeamName('');
       setSelectedOrganization('');
       setSelectedYear(currentYear.toString());
+      setShowOrganizationDropdown(false);
       onClose();
     } catch (error) {
       Alert.alert('Error', 'Failed to create team. Please try again.');
@@ -125,7 +133,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
           </View>
 
           {/* Body */}
-          <View style={styles.modalBody}>
+          <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
             <Text style={styles.description}>
               Create a new team to start tracking games and player statistics.
             </Text>
@@ -153,31 +161,45 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
 
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Organization *</Text>
-              <View style={styles.pickerContainer}>
-                <Text style={styles.pickerLabel}>Select Organization</Text>
-                <View style={styles.organizationGrid}>
+              <TouchableOpacity
+                style={styles.dropdownButton}
+                onPress={() => setShowOrganizationDropdown(!showOrganizationDropdown)}
+                disabled={isSubmitting}
+              >
+                <Text style={[
+                  styles.dropdownButtonText,
+                  !selectedOrganization && styles.dropdownPlaceholder
+                ]}>
+                  {selectedOrganization || 'Select Organization'}
+                </Text>
+                <ChevronDown size={20} color={Colors.grey} />
+              </TouchableOpacity>
+              
+              {showOrganizationDropdown && (
+                <View style={styles.dropdownList}>
                   {organizations.map((org) => (
                     <TouchableOpacity
                       key={org}
                       style={[
-                        styles.organizationChip,
-                        selectedOrganization === org && styles.selectedOrganizationChip
+                        styles.dropdownItem,
+                        selectedOrganization === org && styles.selectedDropdownItem
                       ]}
-                      onPress={() => setSelectedOrganization(org)}
+                      onPress={() => handleSelectOrganization(org)}
                       disabled={isSubmitting}
                     >
-                      <Text
-                        style={[
-                          styles.organizationChipText,
-                          selectedOrganization === org && styles.selectedOrganizationChipText
-                        ]}
-                      >
+                      <Text style={[
+                        styles.dropdownItemText,
+                        selectedOrganization === org && styles.selectedDropdownItemText
+                      ]}>
                         {org}
                       </Text>
+                      {selectedOrganization === org && (
+                        <Check size={16} color={Colors.primary} />
+                      )}
                     </TouchableOpacity>
                   ))}
                 </View>
-              </View>
+              )}
             </View>
 
             <View style={styles.inputContainer}>
@@ -205,7 +227,7 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
                 ))}
               </View>
             </View>
-          </View>
+          </ScrollView>
 
           {/* Footer */}
           <View style={styles.modalFooter}>
@@ -299,7 +321,7 @@ const styles = StyleSheet.create({
   modalBody: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    maxHeight: 500,
+    maxHeight: 400,
   },
   description: {
     fontSize: 14,
@@ -309,6 +331,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
+    position: 'relative',
   },
   inputLabel: {
     fontSize: 16,
@@ -336,38 +359,63 @@ const styles = StyleSheet.create({
     color: Colors.grey,
     textAlign: 'right',
   },
-  pickerContainer: {
-    gap: 12,
-  },
-  pickerLabel: {
-    fontSize: 14,
-    color: Colors.grey,
-    marginBottom: 8,
-  },
-  organizationGrid: {
+  dropdownButton: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  organizationChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#E5E7EB',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#F9FAFB',
   },
-  selectedOrganizationChip: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
-  },
-  organizationChipText: {
-    fontSize: 14,
+  dropdownButtonText: {
+    fontSize: 16,
     color: Colors.dark,
-    fontWeight: '500',
   },
-  selectedOrganizationChipText: {
-    color: 'white',
+  dropdownPlaceholder: {
+    color: Colors.grey,
+  },
+  dropdownList: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 1000,
+    maxHeight: 200,
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  selectedDropdownItem: {
+    backgroundColor: '#F0F9FF',
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: Colors.dark,
+  },
+  selectedDropdownItemText: {
+    color: Colors.primary,
+    fontWeight: '600',
   },
   yearGrid: {
     flexDirection: 'row',
