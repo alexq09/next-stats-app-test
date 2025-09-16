@@ -153,19 +153,18 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
 
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Organization *</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={selectedOrganization}
-                  onValueChange={(itemValue) => setSelectedOrganization(itemValue)}
-                  style={styles.picker}
-                  enabled={!isSubmitting}
-                >
-                  <Picker.Item label="Select Organization" value="" />
-                  {organizations.map((org) => (
-                    <Picker.Item key={org} label={org} value={org} />
-                  ))}
-                </Picker>
-              </View>
+              <Picker
+                selectedValue={selectedOrganization}
+                onValueChange={(itemValue) => setSelectedOrganization(itemValue)}
+                style={styles.picker}
+                enabled={!isSubmitting}
+                mode="dropdown"
+              >
+                <Picker.Item label="Select Organization" value="" />
+                {organizations.map((org) => (
+                  <Picker.Item key={org} label={org} value={org} />
+                ))}
+              </Picker>
             </View>
 
             <View style={styles.inputContainer}>
@@ -343,15 +342,12 @@ const styles = StyleSheet.create({
   dropdownPlaceholder: {
     color: Colors.grey,
   },
-  pickerContainer: {
+  picker: {
+    height: 50, 
+    backgroundColor: '#F9FAFB',
     borderWidth: 1,
     borderColor: '#E5E7EB',
     borderRadius: 12,
-    backgroundColor: '#F9FAFB',
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 50,
     color: Colors.dark,
   },
   yearGrid: {
