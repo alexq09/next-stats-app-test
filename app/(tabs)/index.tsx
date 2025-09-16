@@ -1,5 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import { Alert } from "react-native";
 import teamData from "@/assets/data/teams.json";
 import { TeamData } from "@/assets/interfaces/home";
 import { Stack } from "expo-router";
@@ -9,10 +10,12 @@ import FilterButton from "@/components/index/FilterButton";
 import TeamList from "@/components/index/TeamList";
 import { useTeamSearch } from "@/hooks/useTeamSearch";
 import FloatingActionButton from "@/components/index/FloatingActionButton";
+import CreateOrganizationModal from "@/components/modals/CreateOrganizationModal";
 
 const Page = () => {
   const teams = useMemo(() => teamData as TeamData[], []);
   const { searchQuery, setSearchQuery, filteredTeams } = useTeamSearch(teams);
+  const [showCreateOrganizationModal, setShowCreateOrganizationModal] = useState(false);
 
   const handleTeamPress = (team: TeamData) => {
     // TODO: Navigate to team details
@@ -30,8 +33,22 @@ const Page = () => {
   };
 
   const handleAddOrganization = () => {
-    // TODO: Navigate to add organization screen
-    console.log("Add organization pressed");
+    setShowCreateOrganizationModal(true);
+  };
+
+  const handleCreateOrganization = async (name: string) => {
+    // TODO: Implement organization creation logic
+    console.log("Creating organization:", name);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Show success message or handle the created organization
+    Alert.alert("Success", `Organization "${name}" has been created successfully!`);
+  };
+
+  const handleCloseOrganizationModal = () => {
+    setShowCreateOrganizationModal(false);
   };
 
   return (
@@ -56,6 +73,12 @@ const Page = () => {
       <FloatingActionButton
         onAddTeam={handleAddTeam}
         onAddOrganization={handleAddOrganization}
+      />
+
+      <CreateOrganizationModal
+        visible={showCreateOrganizationModal}
+        onClose={handleCloseOrganizationModal}
+        onCreateOrganization={handleCreateOrganization}
       />
     </View>
   );
