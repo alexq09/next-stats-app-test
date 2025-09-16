@@ -11,11 +11,14 @@ import TeamList from "@/components/index/TeamList";
 import { useTeamSearch } from "@/hooks/useTeamSearch";
 import FloatingActionButton from "@/components/index/FloatingActionButton";
 import CreateOrganizationModal from "@/components/modals/CreateOrganizationModal";
+import { DATABASE_ID, databases, ORG_TABLE_ID } from "@/lib/appwrite";
+import { ID } from "react-native-appwrite";
 
 const Page = () => {
   const teams = useMemo(() => teamData as TeamData[], []);
   const { searchQuery, setSearchQuery, filteredTeams } = useTeamSearch(teams);
-  const [showCreateOrganizationModal, setShowCreateOrganizationModal] = useState(false);
+  const [showCreateOrganizationModal, setShowCreateOrganizationModal] =
+    useState(false);
 
   const handleTeamPress = (team: TeamData) => {
     // TODO: Navigate to team details
@@ -39,12 +42,23 @@ const Page = () => {
   const handleCreateOrganization = async (name: string) => {
     // TODO: Implement organization creation logic
     console.log("Creating organization:", name);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Show success message or handle the created organization
-    Alert.alert("Success", `Organization "${name}" has been created successfully!`);
+    try {
+      await databases.createRow({
+        databaseId: DATABASE_ID,
+        tableId: ORG_TABLE_ID,
+        rowId: ID.unique(),
+        data: {
+          name: name,
+        },
+      });
+
+      Alert.alert(
+        "Success",
+        `Organization "${name}" has been created successfully!`
+      );
+    } catch (error) {
+      console.error("Error creating organization:", error);
+    }
   };
 
   const handleCloseOrganizationModal = () => {
