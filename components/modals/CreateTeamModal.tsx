@@ -11,7 +11,8 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { X, Users, Check, ChevronDown } from 'lucide-react-native';
+import { X, Users, Check } from 'lucide-react-native';
+import { Picker } from '@react-native-picker/picker';
 import Colors from '@/constants/Colors';
 
 interface CreateTeamModalProps {
@@ -29,7 +30,6 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
   const [selectedOrganization, setSelectedOrganization] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showOrganizationDropdown, setShowOrganizationDropdown] = useState(false);
 
   // Mock organizations - in production this would come from your API
   const organizations = [
@@ -49,14 +49,8 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
     if (isSubmitting) return;
     setTeamName('');
     setSelectedOrganization('');
-    setSelectedYear(currentYear.toString());
     setShowOrganizationDropdown(false);
     onClose();
-  };
-
-  const handleSelectOrganization = (organization: string) => {
-    setSelectedOrganization(organization);
-    setShowOrganizationDropdown(false);
   };
   const handleSubmit = async () => {
     const trimmedName = teamName.trim();
@@ -92,7 +86,6 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
       setTeamName('');
       setSelectedOrganization('');
       setSelectedYear(currentYear.toString());
-      setShowOrganizationDropdown(false);
       onClose();
     } catch (error) {
       Alert.alert('Error', 'Failed to create team. Please try again.');
@@ -161,45 +154,19 @@ const CreateTeamModal: React.FC<CreateTeamModalProps> = ({
 
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Organization *</Text>
-              <TouchableOpacity
-                style={styles.dropdownButton}
-                onPress={() => setShowOrganizationDropdown(!showOrganizationDropdown)}
-                disabled={isSubmitting}
-              >
-                <Text style={[
-                  styles.dropdownButtonText,
-                  !selectedOrganization && styles.dropdownPlaceholder
-                ]}>
-                  {selectedOrganization || 'Select Organization'}
-                </Text>
-                <ChevronDown size={20} color={Colors.grey} />
-              </TouchableOpacity>
-              
-              {showOrganizationDropdown && (
-                <View style={styles.dropdownList}>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={selectedOrganization}
+                  onValueChange={(itemValue) => setSelectedOrganization(itemValue)}
+                  style={styles.picker}
+                  enabled={!isSubmitting}
+                >
+                  <Picker.Item label="Select Organization" value="" />
                   {organizations.map((org) => (
-                    <TouchableOpacity
-                      key={org}
-                      style={[
-                        styles.dropdownItem,
-                        selectedOrganization === org && styles.selectedDropdownItem
-                      ]}
-                      onPress={() => handleSelectOrganization(org)}
-                      disabled={isSubmitting}
-                    >
-                      <Text style={[
-                        styles.dropdownItemText,
-                        selectedOrganization === org && styles.selectedDropdownItemText
-                      ]}>
-                        {org}
-                      </Text>
-                      {selectedOrganization === org && (
-                        <Check size={16} color={Colors.primary} />
-                      )}
-                    </TouchableOpacity>
+                    <Picker.Item key={org} label={org} value={org} />
                   ))}
-                </View>
-              )}
+                </Picker>
+              </View>
             </View>
 
             <View style={styles.inputContainer}>
@@ -377,45 +344,16 @@ const styles = StyleSheet.create({
   dropdownPlaceholder: {
     color: Colors.grey,
   },
-  dropdownList: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    borderRadius: 12,
+  pickerContainer: {
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8,
-    zIndex: 1000,
-    maxHeight: 200,
+    borderRadius: 12,
+    backgroundColor: '#F9FAFB',
+    overflow: 'hidden',
   },
-  dropdownItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  selectedDropdownItem: {
-    backgroundColor: '#F0F9FF',
-  },
-  dropdownItemText: {
-    fontSize: 16,
+  picker: {
+    height: 50,
     color: Colors.dark,
-  },
-  selectedDropdownItemText: {
-    color: Colors.primary,
-    fontWeight: '600',
   },
   yearGrid: {
     flexDirection: 'row',
