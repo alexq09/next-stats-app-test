@@ -11,6 +11,7 @@ import TeamList from "@/components/index/TeamList";
 import { useTeamSearch } from "@/hooks/useTeamSearch";
 import FloatingActionButton from "@/components/index/FloatingActionButton";
 import CreateOrganizationModal from "@/components/modals/CreateOrganizationModal";
+import CreateTeamModal from "@/components/modals/CreateTeamModal";
 import { DATABASE_ID, databases, ORG_TABLE_ID } from "@/lib/appwrite";
 import { ID } from "react-native-appwrite";
 
@@ -19,6 +20,7 @@ const Page = () => {
   const { searchQuery, setSearchQuery, filteredTeams } = useTeamSearch(teams);
   const [showCreateOrganizationModal, setShowCreateOrganizationModal] =
     useState(false);
+  const [showCreateTeamModal, setShowCreateTeamModal] = useState(false);
 
   const handleTeamPress = (team: TeamData) => {
     // TODO: Navigate to team details
@@ -31,8 +33,7 @@ const Page = () => {
   };
 
   const handleAddTeam = () => {
-    // TODO: Navigate to add team screen
-    console.log("Add team pressed");
+    setShowCreateTeamModal(true);
   };
 
   const handleAddOrganization = () => {
@@ -65,6 +66,19 @@ const Page = () => {
     setShowCreateOrganizationModal(false);
   };
 
+  const handleCreateTeam = async (teamData: { name: string; organization: string; year: string }) => {
+    // TODO: Implement team creation logic
+    console.log("Creating team:", teamData);
+    Alert.alert(
+      "Success",
+      `Team "${teamData.name}" has been created successfully!`
+    );
+  };
+
+  const handleCloseTeamModal = () => {
+    setShowCreateTeamModal(false);
+  };
+
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -93,6 +107,12 @@ const Page = () => {
         visible={showCreateOrganizationModal}
         onClose={handleCloseOrganizationModal}
         onCreateOrganization={handleCreateOrganization}
+      />
+
+      <CreateTeamModal
+        visible={showCreateTeamModal}
+        onClose={handleCloseTeamModal}
+        onCreateTeam={handleCreateTeam}
       />
     </View>
   );
